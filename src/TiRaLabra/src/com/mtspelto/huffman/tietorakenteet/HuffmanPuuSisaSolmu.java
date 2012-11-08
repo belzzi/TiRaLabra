@@ -1,0 +1,124 @@
+/**
+ * 
+ */
+package com.mtspelto.huffman.tietorakenteet;
+
+/**
+ * Tämä luokka toteuttaa Huffman-puun sisäsolmun. Tästä myös periytyy lehti-luokka (HuffmanPuuLehti).
+ *
+ * @author mikkop
+ *
+ */
+public class HuffmanPuuSisaSolmu implements Comparable {
+	private HuffmanPuuSisaSolmu vasenLapsi;
+	private HuffmanPuuSisaSolmu oikeaLapsi;
+	private HuffmanPuuSisaSolmu vanhempi;
+	/**
+	 * Solmun esiintyvyys (sisäsolmussa lapsien esiintyvyyksien summa)
+	 */
+	protected int frekvenssi;
+	/**
+	 * Solmun nimi
+	 */
+	public String nimi;
+	
+	/**
+	 * Vakiokonstruktori. Sisäsolmun jota ei ole alustettu tunnistaa frekvenssistä -1.
+	 */
+	public HuffmanPuuSisaSolmu() {
+		frekvenssi = -1;
+	}
+	/**
+	 * Luo uuden HuffmanPuuSisaSolmun annetulla esiiintyvyydellä.
+	*/
+	public HuffmanPuuSisaSolmu(int frekvenssi) {
+		this.frekvenssi = frekvenssi;
+	}
+	
+	/**
+	 * Vertailija. Kun kahta HuffmanPuuSisaSolmua vertaillaan < ja > operaattoreilla,
+	 * Java kutsuu tätä metodia suuruusjärjestyksen selvittämiseksi.
+	 *
+	 */
+	public int compareTo(Object o) {
+		if (((HuffmanPuuSisaSolmu)o).annaFrekvenssi() > this.annaFrekvenssi())
+			return -1;
+		else
+			if (((HuffmanPuuSisaSolmu)o).annaFrekvenssi() == this.annaFrekvenssi())
+				return 0;
+		return 1;	
+	}
+	
+	public HuffmanPuuSisaSolmu(int frekvenssi, HuffmanPuuSisaSolmu vanhempi, HuffmanPuuSisaSolmu vasenLapsi, HuffmanPuuSisaSolmu oikeaLapsi) {
+		this.frekvenssi = frekvenssi;
+		this.vanhempi = vanhempi;
+		this.vasenLapsi = vasenLapsi;
+		this.oikeaLapsi = oikeaLapsi;
+	}
+	
+	/** Palauttaa frekvenssin (esiintyvyyden)
+	 * 
+	 * @return int Frekvenssi (esiintyvyys)
+	 */
+	public int annaFrekvenssi() {
+		return frekvenssi;
+	}
+	
+	/** Asettaa frekvenssin (esiintyvyyden)
+	 * 
+	 * @param frekvenssi
+	 */
+	public void asetaFrekvenssi(int frekvenssi) {
+		this.frekvenssi = frekvenssi;
+	}
+	
+	/**
+	 * Palauttaa vasemman lapsen
+	 * @return HuffmanPuuSisaSolmu vasen lapsi
+	 */
+	public HuffmanPuuSisaSolmu annaVasenLapsi() {
+		return this.vasenLapsi;
+	}
+	
+	/** Palauttaa oikean lapsen
+	 * 
+	 * @return HuffmanPuuSisaSolmu oikea lapsi
+	 */
+	public HuffmanPuuSisaSolmu annaOikeaLapsi() {
+		return this.oikeaLapsi;
+	}
+	
+	/**
+	 * Palauttaa tämän elementin vanhemman.
+	 * @return HuffmanPuuSisaSolmu elementin vanhempi
+	 */
+	public HuffmanPuuSisaSolmu annaVanhempi() {
+		return this.vanhempi;
+	}
+		
+	/** Asettaa vasemman lapsen
+	 * 
+	 * @param HuffmanPuuSisaSolmu vasen lapsi
+	 */
+	public void asetaVasen(HuffmanPuuSisaSolmu h) {
+		this.vasenLapsi = h;
+	}
+	
+	/** Asettaa oikean lapsen
+	 * 
+	 * @param HuffmanPuuSisaSolmu oikea lapsi
+	 */
+	public void asetaOikea(HuffmanPuuSisaSolmu h) {
+		this.oikeaLapsi= h;
+	}
+	
+	/** Asettaa vanhemman
+	 * 
+	 * @param HuffmanPuuSisaSolmu vanhempi
+	 */
+	public boolean asetaVanhempi(HuffmanPuuSisaSolmu h) {
+		this.vanhempi = h;
+		return true;
+	}
+	
+}
