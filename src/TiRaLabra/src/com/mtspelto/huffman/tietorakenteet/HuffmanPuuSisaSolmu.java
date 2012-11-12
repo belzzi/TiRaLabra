@@ -1,8 +1,4 @@
-/**
- * 
- */
 package com.mtspelto.huffman.tietorakenteet;
-
 /**
  * Tämä luokka toteuttaa Huffman-puun sisäsolmun. Tästä myös periytyy lehti-luokka (HuffmanPuuLehti).
  *
@@ -49,6 +45,14 @@ public class HuffmanPuuSisaSolmu implements Comparable {
 		return 1;	
 	}
 	
+	/**
+	 * Luo annetuilla parametreillä HuffmanPuuSisaSolmu-olion.
+	 * 
+	 * @param frekvenssi
+	 * @param vanhempi
+	 * @param vasenLapsi
+	 * @param oikeaLapsi
+	 */
 	public HuffmanPuuSisaSolmu(int frekvenssi, HuffmanPuuSisaSolmu vanhempi, HuffmanPuuSisaSolmu vasenLapsi, HuffmanPuuSisaSolmu oikeaLapsi) {
 		this.frekvenssi = frekvenssi;
 		this.vanhempi = vanhempi;
@@ -98,7 +102,7 @@ public class HuffmanPuuSisaSolmu implements Comparable {
 		
 	/** Asettaa vasemman lapsen
 	 * 
-	 * @param HuffmanPuuSisaSolmu vasen lapsi
+	 * @param h vasen lapsi
 	 */
 	public void asetaVasen(HuffmanPuuSisaSolmu h) {
 		this.vasenLapsi = h;
@@ -106,7 +110,7 @@ public class HuffmanPuuSisaSolmu implements Comparable {
 	
 	/** Asettaa oikean lapsen
 	 * 
-	 * @param HuffmanPuuSisaSolmu oikea lapsi
+	 * @param h oikea lapsi
 	 */
 	public void asetaOikea(HuffmanPuuSisaSolmu h) {
 		this.oikeaLapsi= h;
@@ -114,7 +118,7 @@ public class HuffmanPuuSisaSolmu implements Comparable {
 	
 	/** Asettaa vanhemman
 	 * 
-	 * @param HuffmanPuuSisaSolmu vanhempi
+	 * @param h vanhempi
 	 */
 	public boolean asetaVanhempi(HuffmanPuuSisaSolmu h) {
 		this.vanhempi = h;
