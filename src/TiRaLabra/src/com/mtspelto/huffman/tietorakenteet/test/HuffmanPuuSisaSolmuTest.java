@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.mtspelto.huffman.test;
+package com.mtspelto.huffman.tietorakenteet.test;
 
 import static org.junit.Assert.*;
 

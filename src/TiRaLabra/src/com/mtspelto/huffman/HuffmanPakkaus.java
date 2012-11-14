@@ -9,6 +9,7 @@ import java.util.Iterator;
 import java.util.Set;
 import java.util.PriorityQueue;
 
+import com.mtspelto.huffman.tietorakenteet.HajautusTaulukko;
 import com.mtspelto.huffman.tietorakenteet.HuffmanPuuLehti;
 import com.mtspelto.huffman.tietorakenteet.HuffmanPuuSisaSolmu;
 
@@ -69,13 +70,13 @@ public class HuffmanPakkaus implements PakkausRajapinta {
 	/** Hajautustaulukko johon tallennetaan kaikki Huffman-koodit merkill‰ avainnettuna 
 	 *  T‰t‰ k‰ytet‰‰n kun tiedet‰‰n merkki ja halutaan tiet‰‰ Huffman-koodi.
 	 */
-	HashMap merkistaKoodi;
+	HajautusTaulukko merkistaKoodi;
 	
 	/** Hajautustaulukko johon tallennetaan kaikki merkit Huffman-koodilla avainnettuna.
 	 * T‰t‰ k‰ytet‰‰n kun tiedet‰‰n merkin Huffman-koodi ja halutaan tiet‰‰ mit‰ merkki‰
 	 * se vastaa.
 	 */
-	HashMap koodistaMerkki;
+	HajautusTaulukko koodistaMerkki;
 	
 	/**
 	 * Rakentaa HuffmanPakkaus-luokan.
@@ -88,8 +89,8 @@ public class HuffmanPakkaus implements PakkausRajapinta {
 	public HuffmanPakkaus(File lahde, File kohde, int pakkausBlokkiKoko, int purkuBlokkiKoko) {
 		this.purkuBlokkiKoko = purkuBlokkiKoko;
 		this.pakkausBlokkiKoko = pakkausBlokkiKoko;
-		merkistaKoodi = new HashMap();
-		koodistaMerkki = new HashMap();
+		merkistaKoodi = new HajautusTaulukko();
+		koodistaMerkki = new HajautusTaulukko();
 		this.lahde = lahde;
 		this.kohde = kohde;
 	}
@@ -99,17 +100,17 @@ public class HuffmanPakkaus implements PakkausRajapinta {
 	 * 
 	 */
 	public void tulostaTaulukot() {
-		Iterator arvot = merkistaKoodi.values().iterator();
-		Iterator avaimet = merkistaKoodi.keySet().iterator();
-		System.out.println("##DEBUG: Yhteens‰ " + merkistaKoodi.size() + " koodia tallennettu.\n\nMerkist‰ koodi- taulukko:");
+		Iterator arvot = merkistaKoodi.arvot();
+		Iterator avaimet = merkistaKoodi.avaimet();
+		System.out.println("##DEBUG: Yhteens‰ " + merkistaKoodi.annaKoko() + " koodia tallennettu.\n\nMerkist‰ koodi- taulukko:");
 		System.out.println("MERKKI     KOODI\n----------------");
 		while (arvot.hasNext()) {
 			String arvo = (String)arvot.next();
 			Character avain = (Character)avaimet.next();
 			System.out.println(avain + "          " + arvo);
 		}
-		arvot = koodistaMerkki.values().iterator();
-		avaimet = koodistaMerkki.keySet().iterator();
+		arvot = koodistaMerkki.arvot();
+		avaimet = koodistaMerkki.avaimet();
 		System.out.println("\n\n##DEBUG: Koodista merkki- taulukko:");
 		System.out.println("KOODI      MERKKI\n----------------");
 		while (arvot.hasNext()) {
@@ -135,11 +136,11 @@ public class HuffmanPakkaus implements PakkausRajapinta {
 		
 		BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(kohde));
 		
-		koodistaMerkki = (HashMap)ois.readObject();
+		koodistaMerkki = (HajautusTaulukko)ois.readObject();
 		
 		if (DEBUG) {
-			Iterator it = koodistaMerkki.keySet().iterator();
-			Iterator it2 = koodistaMerkki.values().iterator();
+			Iterator it = koodistaMerkki.avaimet();
+			Iterator it2 = koodistaMerkki.arvot();
 			while (it.hasNext()) {
 				char c = (char)it2.next();
 				System.out.println(it.next().toString() + ": " + c);
@@ -171,7 +172,7 @@ public class HuffmanPakkaus implements PakkausRajapinta {
 	
 			for (int k = 0; k<lohkonKoodiMerkitTaulukko.length; k++) {
 				nykyisenMerkinKoodi.append(lohkonKoodiMerkitTaulukko[k]);
-				Object o = koodistaMerkki.get(nykyisenMerkinKoodi.toString());
+				Object o = koodistaMerkki.annaArvo(nykyisenMerkinKoodi.toString());
 				if (o != null) {
 					lohkonSelkoTeksti.append(o.toString());
 					nykyisenMerkinKoodi = new StringBuilder();
@@ -252,21 +253,17 @@ public class HuffmanPakkaus implements PakkausRajapinta {
 		int loopissaTavujaLuettu = 0;
 		int yhteensaTavujaKirjoitettu = 0;
 			
-
-		/** ALGORITMI #2: T‰m‰ algoritmi hyˆdynt‰‰ BufferedOutputStreamin sis‰ist‰ puskuria ja kirjoittaa tavu kerrallaan sit‰ mukaa kun tavuja pakataan.
-		 * */
 		byte tavu = 0;
 		int bittiLaskuri = 0;
 		int tavuLaskuri = 0;
 		
-		//StringBuilder sb = new StringBuilder;
 		byte[] jaljelleJaaneetMerkit = new byte[10];
 		while ((loopissaTavujaLuettu = r.read(lahdeTaulukko))>0) {
 			//Kirjoitetaan jokainen merkki Huffman-koodina StringBufferiin...
 			
 			for (int i = 0; i < loopissaTavujaLuettu; i++) {
 				//sb.append((String)merkistaKoodi.get(lahdeTaulukko[i]));
-				byte[] koodi = ((String)merkistaKoodi.get(lahdeTaulukko[i])).getBytes();
+				byte[] koodi = ((String)merkistaKoodi.annaArvo(lahdeTaulukko[i])).getBytes();
 				for (int j = 0; j < koodi.length; j++) {
 					bittiLaskuri++;
 					tavu = (byte)(tavu << 1);
@@ -375,8 +372,8 @@ public class HuffmanPakkaus implements PakkausRajapinta {
 	public void luoMerkkiKoodiTaulukot(HuffmanPuuSisaSolmu s, String koodi) {
 		if (s instanceof HuffmanPuuLehti) {
 				char merkki = ((HuffmanPuuLehti)s).annaMerkki();
-				merkistaKoodi.put(merkki, koodi);
-				koodistaMerkki.put(koodi, merkki);
+				merkistaKoodi.lisaaElementti(merkki, koodi);
+				koodistaMerkki.lisaaElementti(koodi, merkki);
 		} else if (s instanceof HuffmanPuuSisaSolmu) {
 			if (s.annaVasenLapsi() != null)
 				luoMerkkiKoodiTaulukot(s.annaVasenLapsi(),koodi + "0");
