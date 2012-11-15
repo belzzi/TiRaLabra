@@ -32,17 +32,16 @@ public class HuffmanPuuSisaSolmu implements Comparable {
 	}
 	
 	/**
-	 * Vertailija. Kun kahta HuffmanPuuSisaSolmua vertaillaan < ja > operaattoreilla,
-	 * Java kutsuu tätä metodia suuruusjärjestyksen selvittämiseksi.
+	 * Vertailija. Palauttaa 1 jos tämä olio on suurempi kuin parametrina annettu, -1 jos se on pienempi, 0 jos oliot ovat yhtä suuria.
 	 *
 	 */
 	public int compareTo(Object o) {
-		if (((HuffmanPuuSisaSolmu)o).annaFrekvenssi() > this.annaFrekvenssi())
-			return -1;
+		if ( this.annaFrekvenssi() > ((HuffmanPuuSisaSolmu)o).annaFrekvenssi())
+			return 1;
 		else
 			if (((HuffmanPuuSisaSolmu)o).annaFrekvenssi() == this.annaFrekvenssi())
 				return 0;
-		return 1;	
+		return -1;	
 	}
 	
 	/**

@@ -1,8 +1,5 @@
 package com.mtspelto.huffman.tietorakenteet;
 
-
-
-
 /** Luokka joka toteuttaa Huffman-puun lehden. Huffman-puussa vain lehdiss‰ s‰ilytet‰‰n dataa,
  * joten t‰m‰ luokka lis‰‰ HuffmanPuuSisaSolmuun kent‰t arvolle ja frekvenssille (esiintyvyydelle).
  * 

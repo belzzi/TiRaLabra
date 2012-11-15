@@ -1,17 +1,13 @@
 package com.mtspelto.huffman;
 
 import java.io.*;
-import java.nio.ByteBuffer;
 import java.text.DecimalFormat;
-import java.util.Collection;
-import java.util.HashMap;
 import java.util.Iterator;
-import java.util.Set;
-import java.util.PriorityQueue;
 
 import com.mtspelto.huffman.tietorakenteet.HajautusTaulukko;
 import com.mtspelto.huffman.tietorakenteet.HuffmanPuuLehti;
 import com.mtspelto.huffman.tietorakenteet.HuffmanPuuSisaSolmu;
+import com.mtspelto.huffman.tietorakenteet.MinimiKeko;
 
 
 /**
@@ -204,14 +200,13 @@ public class HuffmanPakkaus implements PakkausRajapinta {
 		ObjectOutputStream oos = new ObjectOutputStream(fos);
 		
 		try {
-			HashMap esiintyvyydet = annaEsiintyvyydet(r);
+			HajautusTaulukko esiintyvyydet = annaEsiintyvyydet(r);
 			r.close();
 			
-			Set<Character> avaimet = esiintyvyydet.keySet();
-			Collection arvot = esiintyvyydet.values();
-	
 			//J‰rjestet‰‰n merkit esiintyvyyden perusteella PrioriteettiJonoa k‰ytt‰en ##TODO: Tee oma PrioriteettiJono
-			PriorityQueue<HuffmanPuuSisaSolmu> jono = priorisoiAvaimet(avaimet.iterator(), arvot.iterator());
+			//PriorityQueue<HuffmanPuuSisaSolmu> jono = priorisoiAvaimet(avaimet.iterator(), arvot.iterator());
+			
+			MinimiKeko jono = priorisoiAvaimet(esiintyvyydet.avaimet(), esiintyvyydet.arvot());
 			HuffmanPuuSisaSolmu juuri = luoHuffmanPuu(jono);
 			luoMerkkiKoodiTaulukot(juuri, "");
 			System.out.println("Merkkitaulukot luotu");
@@ -289,12 +284,12 @@ public class HuffmanPakkaus implements PakkausRajapinta {
 	/**
 	 * Metodi joka skannaa l‰hdetiedoston ensimm‰isen kerran l‰pi, ja palauttaa merkkien esiintyvyydet HashMapissa.
 	 * @param r BufferedReader - lukija l‰hdetiedostoon
-	 * @return HashMap Hajautustaulukko joka sis‰lt‰‰ kaikki l‰hdetekstiss‰ esiintyv‰t merkit ja niiden lasketut esiintyvyydet
+	 * @return HajautusTaulukko joka sis‰lt‰‰ kaikki l‰hdetekstiss‰ esiintyv‰t merkit ja niiden lasketut esiintyvyydet
 	 * @throws FileNotFoundException
 	 * @throws IOException
 	 */
-	public HashMap annaEsiintyvyydet(BufferedReader r) throws FileNotFoundException, IOException {
-		HashMap esiintyvyydet = new HashMap();
+	public HajautusTaulukko annaEsiintyvyydet(BufferedReader r) throws FileNotFoundException, IOException {
+		HajautusTaulukko esiintyvyydet = new HajautusTaulukko();
 		
 		char[] lahdeTaulukko = new char[256];
 		int yhteensaTavujaLuettu = 0;
@@ -305,10 +300,10 @@ public class HuffmanPakkaus implements PakkausRajapinta {
 			
 			for (int i = 0; i < lahdeTaulukko.length; i++) {
 				Character merkki = new Character(lahdeTaulukko[i]);
-				if (esiintyvyydet.containsKey(merkki)) {
-					esiintyvyydet.put(merkki, ((Integer)esiintyvyydet.get(merkki)).intValue()+1);
+				if (esiintyvyydet.annaArvo(merkki) != null) {
+					esiintyvyydet.korvaaElementti(merkki, ((Integer)esiintyvyydet.annaArvo(merkki)).intValue()+1);
 				} else {
-					esiintyvyydet.put(merkki, new Integer(1));
+					esiintyvyydet.lisaaElementti(merkki, 1);
 				}
 			}
 		}
@@ -321,21 +316,22 @@ public class HuffmanPakkaus implements PakkausRajapinta {
 	 * @param jono L‰hdetekstiss‰ esiintyv‰t merkit esiintyvyysj‰rjestyksess‰
 	 * @return HuffmanPuuSisaSolmu Huffman-puurakenteen juuri
 	 */
-	public HuffmanPuuSisaSolmu luoHuffmanPuu(PriorityQueue<HuffmanPuuSisaSolmu> jono) {
+	public HuffmanPuuSisaSolmu luoHuffmanPuu(MinimiKeko jono) {
 		HuffmanPuuSisaSolmu juuri;
 		HuffmanPuuSisaSolmu pieninFrekvenssi = null;
 		HuffmanPuuSisaSolmu toiseksiPienin = null;
-		while (jono.size() > 1) {
+		while (jono.koko() > 1) {
 			//Tehd‰‰n puu
-			pieninFrekvenssi = jono.poll();
-			toiseksiPienin = jono.poll();
+			pieninFrekvenssi = jono.annaPienin();
+			toiseksiPienin = jono.annaPienin();
 			HuffmanPuuSisaSolmu s = new HuffmanPuuSisaSolmu(pieninFrekvenssi.annaFrekvenssi() + toiseksiPienin.annaFrekvenssi());
 			pieninFrekvenssi.asetaVanhempi(s);
 			s.asetaVasen(pieninFrekvenssi);
 			s.asetaOikea(toiseksiPienin);
-			jono.offer(s);
+			jono.lisaa(s);
 		}
-		juuri = (HuffmanPuuSisaSolmu)jono.remove();
+		//juuri = (HuffmanPuuSisaSolmu)jono.remove();
+		juuri = (HuffmanPuuSisaSolmu)jono.annaPienin();
 		pieninFrekvenssi.asetaVanhempi(juuri);
 		toiseksiPienin.asetaVanhempi(juuri);
 		juuri.asetaVasen(pieninFrekvenssi);
@@ -349,15 +345,18 @@ public class HuffmanPakkaus implements PakkausRajapinta {
 	 * @param arvot
 	 * @return PriorityQueue J‰rjestetty lista esiintyvyyksist‰
 	 */
-	public PriorityQueue<HuffmanPuuSisaSolmu> priorisoiAvaimet(Iterator avaimet, Iterator arvot) {
-		PriorityQueue<HuffmanPuuSisaSolmu> jono = new PriorityQueue<HuffmanPuuSisaSolmu>();
-
+	//public PriorityQueue<HuffmanPuuSisaSolmu> priorisoiAvaimet(Iterator avaimet, Iterator arvot) {
+	public MinimiKeko priorisoiAvaimet(Iterator avaimet, Iterator arvot) {
+		//PriorityQueue<HuffmanPuuSisaSolmu> jono = new PriorityQueue<HuffmanPuuSisaSolmu>();
+		MinimiKeko jono = new MinimiKeko();
 		while (avaimet.hasNext()) {
 			char merkki = ((Character)avaimet.next()).charValue();
 			int esiintyvyys = ((Integer)arvot.next()).intValue(); 
 			HuffmanPuuLehti h = new HuffmanPuuLehti(merkki, esiintyvyys);
-			h.nimi = merkki + "!";
-			jono.offer(h);
+			//KekoMerkki k = new KekoMerkki()
+			//h.nimi = merkki + "!";
+			//jono.offer(h);
+			jono.lisaa(h);
 		}
 		return jono;
 	}

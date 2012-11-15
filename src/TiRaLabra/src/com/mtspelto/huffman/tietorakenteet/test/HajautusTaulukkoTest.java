@@ -45,11 +45,12 @@ public class HajautusTaulukkoTest {
 		HajautusTaulukko ht = new HajautusTaulukko();
 		ht.lisaaElementti(new String("yksi"), new String("yksiArvo"));
 		ht.lisaaElementti(new String("kaksi"), new String("kaksiArvo"));
-		ht.lisaaElementti(new String("kolme"), new String("kolmeArvo"));
+		ht.lisaaElementti(new String("kolme"), new String("kolmeVanhaArvo"));
+		ht.korvaaElementti(new String("kolme"), new String("kolmeUusiArvo"));
 		assertTrue(ht.annaKoko() == 3);
 		ht.poistaElementti("kaksi");
 		assertEquals("yksiArvo", (String)ht.annaArvo("yksi"));
-		assertEquals("kolmeArvo", (String)ht.annaArvo("kolme"));
+		assertEquals("kolmeUusiArvo", (String)ht.annaArvo("kolme"));
 		System.out.println(ht.annaKoko());
 		assertTrue(ht.annaKoko() == 2);
 		ht.lisaaElementti(1,"yksiIntArvo");

@@ -88,6 +88,25 @@ public class HajautusTaulukko implements Serializable {
 	}
 	
 	/**
+	 * Metodi joka korvaa olemassaolevan elementin hajautustaulukossa,
+	 * tai jos elementtiä ei löydy, lisää uuden.
+	 * 
+	 * @param avain
+	 * @param arvo
+	 * @return True mikäli elementin lisäys onnistui, muutoin false,
+	 */
+	public boolean korvaaElementti(Object avain, Object arvo) {
+		//Korvaa..
+		if (annaArvo(avain) != null) {
+			valitseLista(avain).korvaaTaiLisaa(avain, arvo);
+			return true;
+		} else { 
+			// tai lisää:
+			return lisaaElementti(avain, arvo);
+		}
+	}
+
+	/**
 	 * Merkkijonoavaimille käytettävä hajautusalgoritmi.
 	 * Laskee hajautuspaikan annetulle merkkijonoavaimelle.
 	 * @param s Merkkijono

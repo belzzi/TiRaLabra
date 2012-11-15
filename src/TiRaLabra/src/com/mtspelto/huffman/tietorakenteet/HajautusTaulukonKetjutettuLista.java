@@ -124,6 +124,32 @@ public class HajautusTaulukonKetjutettuLista implements Serializable {
 		return true;
 	}
 	
+	/** Lisää uuden elementin annetulla avaimella ja arvolla.
+	 * 
+	 * @param avain
+	 * @param arvo
+	 * @return true mikäli lisäys onnistui, muutoin false.
+	 */
+	public boolean korvaaTaiLisaa(Object avain, Object arvo) {
+		Elementti valiaikainen = alku;
+		boolean paikkaLoytynyt = false;
+		
+		while (!paikkaLoytynyt) {
+			if (valiaikainen.annaAvain().equals(avain)) {
+				valiaikainen.asetaArvo(arvo);
+				paikkaLoytynyt = true;
+				return true;
+			}
+			if (valiaikainen.annaSeuraava() == null) {
+				valiaikainen.asetaSeuraava(new Elementti(avain,arvo));
+				paikkaLoytynyt = true;
+			} else {
+				valiaikainen = valiaikainen.annaSeuraava();
+			}
+		}
+		return true;
+	}
+	
 	/** Poistaa annettua avainta vastaavan elementin linkitetystä listasta.
 	 * 
 	 * @param o
