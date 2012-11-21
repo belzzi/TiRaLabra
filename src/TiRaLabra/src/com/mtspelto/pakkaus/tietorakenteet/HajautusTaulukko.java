@@ -1,4 +1,4 @@
-package com.mtspelto.huffman.tietorakenteet;
+package com.mtspelto.pakkaus.tietorakenteet;
 
 import java.io.Serializable;
 import java.util.Iterator;
@@ -135,6 +135,20 @@ public class HajautusTaulukko implements Serializable {
 		return nykyinenKoko;
 	}
 	
+	/** Kertoo sisältääkö hajautustaulukko annetun avaimen.
+	 * 
+	 * @param avain
+	 * @return True mikäli hajautustaulukossa on annettu avain, muutoin false.
+	 */
+	public boolean sisaltaaAvaimen(Object avain) {
+		if (avain == null)
+			return false;
+		HajautusTaulukonKetjutettuLista lista = valitseLista(avain);
+		if (lista != null)
+			return lista.sisaltaaAvaimen(avain);
+		return false;
+	}
+	
 	/** Palauttaa annettua avainta vastaavan arvon.
 	 * 
 	 * @param avain
@@ -145,7 +159,7 @@ public class HajautusTaulukko implements Serializable {
 			return null;
 		HajautusTaulukonKetjutettuLista lista = valitseLista(avain);
 		if (lista != null)
-			return valitseLista(avain).annaElementtiAvaimella(avain);
+			return lista.annaElementtiAvaimella(avain);
 		return null;
 	}
 	

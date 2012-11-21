@@ -1,4 +1,4 @@
-package com.mtspelto.huffman.tietorakenteet;
+package com.mtspelto.pakkaus.tietorakenteet;
 
 import java.io.Serializable;
 import java.util.Iterator;
@@ -77,6 +77,7 @@ class Elementti implements Serializable {
 	public void asetaSeuraava(Elementti e) {
 		this.seuraava = e;
 	}
+	
 	
 }
 
@@ -201,6 +202,28 @@ public class HajautusTaulukonKetjutettuLista implements Serializable {
 		}
 		return null;
 	}
+	
+	/** Kertoo sisältääkö lista annetun avaimen.
+	 * 
+	 * @param avain Avain jota kysellään
+	 * @return true mikäli avain on listassa, muutoin false.
+	 */
+	public boolean sisaltaaAvaimen(Object avain) {
+		Elementti valiaikainen = alku;
+		boolean elementtiLoytynyt = false;
+		if (valiaikainen == null)
+			return false;
+		while (!elementtiLoytynyt) {
+			if (valiaikainen.annaAvain().equals(avain))
+				return true;
+			if (valiaikainen.annaSeuraava() != null) {
+					valiaikainen = valiaikainen.annaSeuraava();
+			} else {
+				return false;
+			}
+		}
+		return false;
+	}	
 	
 	/** Palauttaa ensimmäisen elementin
 	 *  

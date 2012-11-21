@@ -1,7 +1,7 @@
-package com.mtspelto.huffman.tietorakenteet;
+package com.mtspelto.pakkaus.tietorakenteet;
 
 /** Luokka joka toteuttaa Huffman-puun lehden. Huffman-puussa vain lehdiss‰ s‰ilytet‰‰n dataa,
- * joten t‰m‰ luokka lis‰‰ HuffmanPuuSisaSolmuun kent‰t arvolle ja frekvenssille (esiintyvyydelle).
+ * joten t‰m‰ luokka lis‰‰ HuffmanPuuSisaSolmuun kent‰n s‰ilytett‰v‰n merkin arvolle.
  * 
  * @author mikkop
  * @see HuffmanPuuSisaSolmu

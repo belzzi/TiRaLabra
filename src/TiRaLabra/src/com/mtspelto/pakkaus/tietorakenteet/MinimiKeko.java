@@ -1,20 +1,18 @@
 /**
  * 
  */
-package com.mtspelto.huffman.tietorakenteet;
+package com.mtspelto.pakkaus.tietorakenteet;
 
-/** Bin‰‰ripuuna toteutettu minimikeko. 
+/** Bin‰‰ripuuna toteutettu minimikeko. Tallentaa tiedot taulukkoon.
  * 
  * 
  * @author mikkop
- *
  */
 public class MinimiKeko {
 	
 	/** Keon tiedot tallennetaan t‰h‰n taulukkoon.
 	 * 
 	 * Koon t‰ytyy olla 2:n potenssi.
-	 * 
 	 */
 	private HuffmanPuuSisaSolmu taulukko[];
 	
@@ -31,7 +29,7 @@ public class MinimiKeko {
 	/** Keon maksimikoko jota k‰ytet‰‰n jos muuta arvoa ei ole annettu konstrukrille.
 	 * 
 	 */
-	private static final int VAKIO_MAKSIMIKOKO = 256;
+	private static final int VAKIO_MAKSIMIKOKO = 1024;
 	
 	
 	/** Rakentaa tyhj‰n minimikeon.
@@ -129,7 +127,6 @@ public class MinimiKeko {
         if (taulukko[vasen] != null)
         	vasenFrekvenssi = taulukko[vasen].annaFrekvenssi();
         
-        //int pienempiLapsiFrekvenssi = oikeaFrekvenssi > vasenFrekvenssi ? vasenFrekvenssi : oikeaFrekvenssi;
         int pienempiLapsi = oikeaFrekvenssi > vasenFrekvenssi ? vasen : oikea;
         
         if (taulukko[aloitusSolmu].compareTo(taulukko[pienempiLapsi]) > 0) {
@@ -140,7 +137,7 @@ public class MinimiKeko {
 	
 	/** Palauttaa taulukon nykyisen elementtien m‰‰r‰n.
 	 * 
-	 * @return
+	 * @return hajautustaulukon nykyinen elementtien m‰‰r‰
 	 */
 	public int koko() {
 		return koko; 
@@ -180,8 +177,7 @@ public class MinimiKeko {
 	public int oikea(int solmu) {
 		if (solmu == 0)
 			return 2;
-		//else
-			return ((++solmu)*2);
+		return ((++solmu)*2);
 	}
 
 	/** Apumetodi joka vaihtaa taulukon 2 solmua kesken‰‰n

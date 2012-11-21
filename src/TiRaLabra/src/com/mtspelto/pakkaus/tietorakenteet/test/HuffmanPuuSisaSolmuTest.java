@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.mtspelto.huffman.tietorakenteet.test;
+package com.mtspelto.pakkaus.tietorakenteet.test;
 
 import static org.junit.Assert.*;
 
@@ -11,10 +11,11 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import com.mtspelto.huffman.tietorakenteet.HuffmanPuuSisaSolmu;
+import com.mtspelto.pakkaus.tietorakenteet.HuffmanPuuSisaSolmu;
 
 
-/**
+/** Yksikkötesti Huffman-puulle.
+ * 
  * @author mikkop
  *
  */
@@ -49,7 +50,7 @@ public class HuffmanPuuSisaSolmuTest {
 	}
 
 	/**
-	 * Test method for {@link com.mtspelto.huffman.tietorakenteet.HuffmanPuuSisaSolmu#HuffmanPuuSisaSolmu(int, com.mtspelto.huffman.tietorakenteet.HuffmanPuuSisaSolmu, com.mtspelto.huffman.tietorakenteet.HuffmanPuuSisaSolmu, com.mtspelto.huffman.tietorakenteet.HuffmanPuuSisaSolmu)}.
+	 * Test method for {@link com.mtspelto.pakkaus.tietorakenteet.HuffmanPuuSisaSolmu#HuffmanPuuSisaSolmu(int, com.mtspelto.pakkaus.tietorakenteet.HuffmanPuuSisaSolmu, com.mtspelto.pakkaus.tietorakenteet.HuffmanPuuSisaSolmu, com.mtspelto.pakkaus.tietorakenteet.HuffmanPuuSisaSolmu)}.
 	 */
 	@Test
 	public void testHuffmanPuuSisaSolmuIntHuffmanPuuSisaSolmuHuffmanPuuSisaSolmuHuffmanPuuSisaSolmu() {

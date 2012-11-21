@@ -1,4 +1,4 @@
-package com.mtspelto.huffman.tietorakenteet;
+package com.mtspelto.pakkaus.tietorakenteet;
 /**
  * Tämä luokka toteuttaa Huffman-puun sisäsolmun. Tästä myös periytyy lehti-luokka (HuffmanPuuLehti).
  *

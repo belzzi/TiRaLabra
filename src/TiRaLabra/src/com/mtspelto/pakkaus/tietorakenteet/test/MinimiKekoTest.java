@@ -1,4 +1,4 @@
-package com.mtspelto.huffman.tietorakenteet.test;
+package com.mtspelto.pakkaus.tietorakenteet.test;
 import static org.junit.Assert.*;
 
 import javax.swing.text.html.MinimalHTMLWriter;
@@ -9,10 +9,14 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import com.mtspelto.huffman.tietorakenteet.HuffmanPuuLehti;
-import com.mtspelto.huffman.tietorakenteet.MinimiKeko;
+import com.mtspelto.pakkaus.tietorakenteet.HuffmanPuuLehti;
+import com.mtspelto.pakkaus.tietorakenteet.MinimiKeko;
 
-
+/** Yksikkötesti MinimiKeko-luokalle.
+ * 
+ * @author mikkop
+ *
+ */
 public class MinimiKekoTest {
 
 	@BeforeClass

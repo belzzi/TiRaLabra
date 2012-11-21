@@ -1,19 +1,19 @@
-package com.mtspelto.huffman;
+package com.mtspelto.pakkaus;
 
 import java.io.*;
 import java.text.DecimalFormat;
 import java.util.Iterator;
 
-import com.mtspelto.huffman.tietorakenteet.HajautusTaulukko;
-import com.mtspelto.huffman.tietorakenteet.HuffmanPuuLehti;
-import com.mtspelto.huffman.tietorakenteet.HuffmanPuuSisaSolmu;
-import com.mtspelto.huffman.tietorakenteet.MinimiKeko;
+import com.mtspelto.pakkaus.tietorakenteet.HajautusTaulukko;
+import com.mtspelto.pakkaus.tietorakenteet.HuffmanPuuLehti;
+import com.mtspelto.pakkaus.tietorakenteet.HuffmanPuuSisaSolmu;
+import com.mtspelto.pakkaus.tietorakenteet.MinimiKeko;
 
 
 /**
- * Huffman-algoritmin pakkaus- ja purkuohjelman "p‰‰ohjelma".
+ * Huffman-algoritmin totetuttava pakkaus- ja purkuohjelma.
  * 
- * @see com.mtspelto.huffman.HuffmanPakkaus#main(String[])
+ * @see com.mtspelto.pakkaus.Pakkaaja
  * @author mikkop
  *
  */
@@ -45,12 +45,6 @@ public class HuffmanPakkaus implements PakkausRajapinta {
 	 */
 	public static final int VAKIO_PURKUBLOKKIKOKO = 128;
 	
-	/**
-	 * Bittimaskit joita k‰ytet‰‰n yksitt‰isten bittien asettamisessa.
-	 */
-	public static final short[] BITTIMASKIT = new short[]{1,2,4,8,16,32,64,128};
-	
-	
 	/** Pakattaessa l‰hdetiedostosta kerralla luettavan lohkon koko.
 	 * 
 	 */
@@ -60,7 +54,15 @@ public class HuffmanPakkaus implements PakkausRajapinta {
 	 * 
 	 */
 	private int purkuBlokkiKoko;
+	
+	/** L‰hdetiedosto
+	 * 
+	 */
 	private File lahde;
+	
+	/** Kohdetiedosto
+	 * 
+	 */
 	private File kohde;
 	
 	/** Hajautustaulukko johon tallennetaan kaikki Huffman-koodit merkill‰ avainnettuna 
@@ -77,8 +79,24 @@ public class HuffmanPakkaus implements PakkausRajapinta {
 	/**
 	 * Rakentaa HuffmanPakkaus-luokan.
 	 * 
-	 * @param lahde
-	 * @param kohde
+	 * @param lahde L‰hdetiedoston nimi
+	 * @param kohde Kohdetiedoston nimi
+	 */
+	public HuffmanPakkaus(File lahde, File kohde) {
+		this.purkuBlokkiKoko = VAKIO_PURKUBLOKKIKOKO;
+		this.pakkausBlokkiKoko = VAKIO_PAKKAUSBLOKKIKOKO;
+		merkistaKoodi = new HajautusTaulukko();
+		koodistaMerkki = new HajautusTaulukko();
+		this.lahde = lahde;
+		this.kohde = kohde;
+	}
+	
+	
+	/**
+	 * Rakentaa HuffmanPakkaus-luokan.
+	 * 
+	 * @param lahde L‰hdetiedoston nimi
+	 * @param kohde Kohdetiedoston nimi
 	 * @param pakkausBlokkiKoko Pakattaessa k‰ytett‰v‰ blokkikoko
 	 * @param purkuBlokkiKoko Purettaessa k‰ytett‰v‰ blokkikoko
 	 */
@@ -184,12 +202,12 @@ public class HuffmanPakkaus implements PakkausRajapinta {
 	}
 	
 	/**
+	 * Tiedoston pakkauksen p‰‰metodi. 
 	 * 
-	 * Tiedoston pakkauksen p‰‰metodi.
+	 * @return true mik‰li pakkaus onnistui, muutoin false
 	 * 
-	 * Huom! Ei t‰ss‰ vaiheessa viel‰ tee muuta kuin skannaa tiedoston kertaalleen
-	 * l‰pi ja etsii Huffman-koodit.
 	 */
+	@Override
 	public boolean pakkaaTiedosto() throws FileNotFoundException, IOException {
 		BufferedReader r = new BufferedReader(new FileReader(lahde));
 		//BufferedWriter w = new BufferedWriter(new FileWriter(kohde));
@@ -236,7 +254,8 @@ public class HuffmanPakkaus implements PakkausRajapinta {
 	
 	
 	/**
-	 *  Kirjoittaa kohdetiedostoon 
+	 *  Kirjoittaa kohdetiedostoon pakatun tiedoston.
+	 *  
 	 * @param r BufferedReader Reader joka osoittaa l‰hdetiedostoon
 	 * @param bos BufferedOutputStream OutputStream joka osoittaa kohdetiedostoon
 	 * @throws FileNotFoundException
@@ -345,17 +364,12 @@ public class HuffmanPakkaus implements PakkausRajapinta {
 	 * @param arvot
 	 * @return PriorityQueue J‰rjestetty lista esiintyvyyksist‰
 	 */
-	//public PriorityQueue<HuffmanPuuSisaSolmu> priorisoiAvaimet(Iterator avaimet, Iterator arvot) {
 	public MinimiKeko priorisoiAvaimet(Iterator avaimet, Iterator arvot) {
-		//PriorityQueue<HuffmanPuuSisaSolmu> jono = new PriorityQueue<HuffmanPuuSisaSolmu>();
 		MinimiKeko jono = new MinimiKeko();
 		while (avaimet.hasNext()) {
 			char merkki = ((Character)avaimet.next()).charValue();
 			int esiintyvyys = ((Integer)arvot.next()).intValue(); 
 			HuffmanPuuLehti h = new HuffmanPuuLehti(merkki, esiintyvyys);
-			//KekoMerkki k = new KekoMerkki()
-			//h.nimi = merkki + "!";
-			//jono.offer(h);
 			jono.lisaa(h);
 		}
 		return jono;
@@ -381,44 +395,4 @@ public class HuffmanPakkaus implements PakkausRajapinta {
 		}
 	}
 
-	/**
-	 * "P‰‰ohjelma" jolla pakkaus- tai purkuoperaatio aloitetaan.
-	 *  
-	 * @param args Argumentteina tulee antaa operaatio (-pakkaa tai -pura), l‰hde- ja kohdetiedostojen nimet
-	 * @throws Exception
-	 */
-	public static void main(String[] args) throws Exception {
-		long startTime = System.currentTimeMillis();
-		if (args.length != 3) {
-			System.out.println("V‰‰r‰ m‰‰r‰ argumentteja. Anna argumenttina operaatio (joko -pakkaa tai -pura), pakattavan tiedoston ja kohdetiedoston nimi.");
-			System.exit(1);
-		}
-		String operaatio = args[0];
-		File lahdeTiedostoNimi = new File(args[1]);
-		if (!lahdeTiedostoNimi.exists()) {
-			System.out.println("L‰hdetiedostoa " + args[1] + " ei ole olemassa.");
-			System.exit(2);
-		}
-			
-		File kohdeTiedostoNimi = new File(args[2]);
-		if (kohdeTiedostoNimi.exists()) {
-			System.out.println("Kohdetiedosto on jo olemassa, poistetaan..");
-			kohdeTiedostoNimi.delete();
-		}
-		
-		HuffmanPakkaus hc = new HuffmanPakkaus(lahdeTiedostoNimi, kohdeTiedostoNimi, VAKIO_PAKKAUSBLOKKIKOKO, VAKIO_PURKUBLOKKIKOKO);
-		try {
-			if (operaatio.equals("-pakkaa")) {
-				hc.pakkaaTiedosto();
-			} else {
-				if (operaatio.equals("-pura")) {
-					hc.puraTiedosto();
-				}
-			}
-			long duration = System.currentTimeMillis() - startTime;
-			System.out.println("Valmis! Suoritus kesti " + duration + " ms.");
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
 }	

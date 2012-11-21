@@ -1,4 +1,4 @@
-package com.mtspelto.huffman.tietorakenteet.test;
+package com.mtspelto.pakkaus.tietorakenteet.test;
 
 import static org.junit.Assert.*;
 
@@ -10,8 +10,13 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import com.mtspelto.huffman.tietorakenteet.HajautusTaulukko;
+import com.mtspelto.pakkaus.tietorakenteet.HajautusTaulukko;
 
+/** Yksikkötesti HajautusTaulukko-luokalle.
+ * 
+ * @author mikkop
+ *
+ */
 public class HajautusTaulukkoTest {
 
 	@BeforeClass
