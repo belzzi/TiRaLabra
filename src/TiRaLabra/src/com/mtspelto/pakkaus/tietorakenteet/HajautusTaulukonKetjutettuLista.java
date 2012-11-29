@@ -99,7 +99,6 @@ public class HajautusTaulukonKetjutettuLista implements Serializable {
 	 * Viite listan ensimm‰iseen elementtiin. 
 	 */
 	private Elementti alku;
-	//private Object edellinen;
 	
 	/** Lis‰‰ uuden elementin annetulla avaimella ja arvolla.
 	 * 

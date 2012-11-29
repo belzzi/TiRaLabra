@@ -66,7 +66,6 @@ public class HajautusTaulukko implements Serializable {
 		if (avain instanceof Byte)
 			palautettava =  listat[((Byte)avain).byteValue()];
 		if (avain instanceof String) {
-			//System.out.println("Stringin " + (String)avain + "  hashCode=" + ((String)avain).hashCode() + "; stringHashCode=" + stringHashCode((String)avain));
 			palautettava =  listat[stringHashCode((String)avain)];
 		}
 		return palautettava;
@@ -198,7 +197,6 @@ public class HajautusTaulukko implements Serializable {
 	 *
 	 */
 	private class ArvotIterator implements Iterator {
-        // start stepping through the array from the beginning
         private Elementti seuraava;
         private int taulukonPositio;
         
@@ -245,7 +243,7 @@ public class HajautusTaulukko implements Serializable {
 	    	// Sitten etsit‰‰n onko sit‰ seuraavaa elementti‰ olemassa
 	    	if (seuraava.annaSeuraava() != null) {
 	    		seuraava = seuraava.annaSeuraava();
-	    	}else {
+	    	} else {
 	    		seuraava = null;
 	    		while (taulukonPositio < listat.length -1 && !seuraavaLoytynyt) {
 	    			taulukonPositio++;

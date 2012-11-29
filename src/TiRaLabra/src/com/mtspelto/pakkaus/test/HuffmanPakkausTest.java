@@ -86,18 +86,18 @@ public class HuffmanPakkausTest {
 			Pakkaaja.main(new String[]{"-pakkaa",fileName2, fileName2Pak});
 			Pakkaaja.main(new String[]{"-pakkaa",fileName3, fileName3Pak});
 			Pakkaaja.main(new String[]{"-pakkaa",fileName4, fileName4Pak});
-			Pakkaaja.main(new String[]{"-pakkaa",fileName5, fileName5Pak});
+			//Pakkaaja.main(new String[]{"-pakkaa",fileName5, fileName5Pak});
 			Pakkaaja.main(new String[]{"-pura",fileName1Pak, fileName1Pur});
 			Pakkaaja.main(new String[]{"-pura",fileName2Pak, fileName2Pur});
 			Pakkaaja.main(new String[]{"-pura",fileName3Pak, fileName3Pur});
 			Pakkaaja.main(new String[]{"-pura",fileName4Pak, fileName4Pur});
-			Pakkaaja.main(new String[]{"-pura",fileName5Pak, fileName5Pur});
+			//Pakkaaja.main(new String[]{"-pura",fileName5Pak, fileName5Pur});
 
 		} catch (Exception e) {
 			
 			e.printStackTrace();
 			fail("Poikkeus");
-		}
+		} 
 	}
 
 }

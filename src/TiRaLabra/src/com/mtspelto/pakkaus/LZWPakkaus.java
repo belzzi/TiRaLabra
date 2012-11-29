@@ -96,8 +96,6 @@ public class LZWPakkaus implements PakkausRajapinta {
 				int kirjoitettavaInt = (int)pakkausSanasto.annaArvo("" + merkkijono);
 				bos.write(12, kirjoitettavaInt);
 				bittiLaskuri += 12;
-				if (DEBUG)
-					System.out.println("  -> Kirjoitettu koodi " + kirjoitettavaInt + "(" + merkkijono.toString() + ")");
 				merkkijono = new StringBuilder();
 				merkkijono.append((char)c);
 			}
@@ -114,86 +112,11 @@ public class LZWPakkaus implements PakkausRajapinta {
 		bos.flush();
 		bos.close();
 		bis.close();
-		System.out.println("Sanaston koko lopussa: " + seuraavaKoodi);
 		System.out.println("Yhteensä " + luettuTavuja + " tavua luettu lähdetiedostosta");
 		System.out.println("Yhteensä " + bittiLaskuri/8  + " tavua dataa kirjoitettu kohdetiedostoon");
 		double teho = (double)(bittiLaskuri/8) / (double)luettuTavuja * 100;
 		DecimalFormat df = new DecimalFormat("#.##");
 		System.out.println("Pakkaustehokkuus: " + df.format(teho) + " %");
 		return true;
-	}
-
-	/** Purkaa lähdetiedoston ja kirjoittaa puretun datan kohdetiedostoon.
-	 * 
-	 * @return true mikäli pakkaus onnistui, muutoin false
-	 * @see com.mtspelto.pakkaus.PakkausRajapinta#puraTiedosto()
-	 */
-	@Override
-	public boolean puraTiedosto() throws FileNotFoundException, IOException {
-		System.out.println("LZW purku aloitetaan");
-		//BufferedInputStream bis = new BufferedInputStream(new FileInputStream(lahde));
-		BittiInputStream bis = new BittiInputStream(new BufferedInputStream(new FileInputStream(lahde)));
-		BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(kohde));
-
-		 String[] sanasto = new String[4096];
-		 int i; // next available codeword value
-		 int bittiLaskuri = 0;
-		 int tavuLaskuri = 0;
-	     int kierrosLaskuri = 0;
-
-	     // Laitetaan kaikki 8-bittiset merkit sanastoon valmiiksi
-	     for (i = 0; i < 256; i++)
-	            sanasto[i] = "" + (char) i;
-	     
-	     int koodiSana = 0;
-	     String edellinenMerkkijono = "";
-	     int suurinKoodi = i;
-	     int seuraavaKoodi = 256;
-	     
-	     while ((koodiSana = bis.read(12)) != -1) {
-	    	 kierrosLaskuri++;
-	    	 bittiLaskuri += 12;
-	    	 if (DEBUG)
-	    		 System.out.println("Kierros " + kierrosLaskuri + ": Luettu koodi " + koodiSana + "("+ sanasto[koodiSana] + ")");
-	    	 if (sanasto[koodiSana] == null) {
-	    		 try {
-	    			 sanasto[koodiSana] = edellinenMerkkijono + edellinenMerkkijono.charAt(0);
-	    		 } catch (StringIndexOutOfBoundsException siobe) {
-	    			 //siobe.printStackTrace();
-	    			 System.out.println("Kierroksella " + kierrosLaskuri + " poikkeus, koodisana " + koodiSana);
-	    			 //throw new Exception();
-	    		 }
-	    		 if (DEBUG)
-	    			 System.out.println("  -> Kirjoitettu koodi " + koodiSana + ": " + sanasto[koodiSana] + "(suurin koodi oli " + suurinKoodi + ")");
-	    		 suurinKoodi = koodiSana;
-	    	 }
-    		 bos.write(sanasto[koodiSana].getBytes());
-	    	 tavuLaskuri += sanasto[koodiSana].length();
-	    	 if ( edellinenMerkkijono != null && edellinenMerkkijono.length() > 0) {
-	    		 sanasto[seuraavaKoodi] = edellinenMerkkijono + sanasto[koodiSana].charAt(0);
-	    		 if (DEBUG)
-	    			 System.out.println("  -> Kirjoitettu koodi " + seuraavaKoodi + ": " + sanasto[seuraavaKoodi]);
-	    		 if (suurinKoodi < seuraavaKoodi)
-	    			 suurinKoodi = seuraavaKoodi;
-	    		 seuraavaKoodi++;
-	    	 }
-	    	 edellinenMerkkijono = sanasto[koodiSana];
-	    	 //Jos sanasto on täynnä, hylätään se ja alustetaan uudestaan:
-	    	 if (seuraavaKoodi == 4096) {
-	    		 sanasto = new String[4096];
-	    	     for (i = 0; i < 256; i++)
-	 	            sanasto[i] = "" + (char) i;
-	    	    seuraavaKoodi = 256;
-	    	 }
-	     }
-	     if (DEBUG) {
-	    	 System.out.println("Yhteensä " + bittiLaskuri/8+ " tavua pakattua dataa luettu");
-	    	 System.out.println("Yhteensä " + tavuLaskuri + " tavua purettua dataa kirjoitettu");	     
-	     }
-	     System.out.println("Sanaston koko lopussa: " + suurinKoodi);
-	     bis.close();
-	     bos.flush();
-	     bos.close();
-	     return true;
 	}
 }

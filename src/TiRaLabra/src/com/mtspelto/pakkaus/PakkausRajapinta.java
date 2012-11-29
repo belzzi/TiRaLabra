@@ -20,14 +20,5 @@ public interface PakkausRajapinta {
 	 * @throws IOException
 	 */
 	public boolean pakkaaTiedosto() throws FileNotFoundException, IOException;
-	
-	/** Purkaa tiedoston.
-	 * 
-	 * @return true mikäli purku onnistui, muutoin false
-	 * @throws FileNotFoundException
-	 * @throws IOException
-	 * @throws ClassNotFoundException
-	 */
-	public boolean puraTiedosto() throws FileNotFoundException, IOException, ClassNotFoundException;
 		
 }

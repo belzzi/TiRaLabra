@@ -111,8 +111,6 @@ public class MinimiKeko {
 	private void heapifyAlaspain(int aloitusSolmu) {
 		int vasen = vasen(aloitusSolmu);
 		int oikea = oikea(aloitusSolmu);
-		int vanhempi = vanhempi(aloitusSolmu);
-		int vaihdettava = 0;
  
 		if (taulukko[aloitusSolmu] == null) return;
         if( oikea >= taulukko.length && vasen >= taulukko.length )

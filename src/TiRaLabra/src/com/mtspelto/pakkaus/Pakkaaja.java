@@ -42,22 +42,30 @@ public class Pakkaaja {
 			System.out.println("Kohdetiedosto " + args[2] + " on jo olemassa, poistetaan..");
 			kohdeTiedostoNimi.delete();
 		}
-		PakkausRajapinta pakkaaja;
-		if (System.getProperty("pakkausalgoritmi").toLowerCase().equals("lzw")) {
-			pakkaaja = new LZWPakkaus(lahdeTiedostoNimi, kohdeTiedostoNimi);
-		} else {
-			pakkaaja = new HuffmanPakkaus(lahdeTiedostoNimi, kohdeTiedostoNimi);
-		}
+
 		try {
+			PakkausRajapinta pakkaaja;
 			if (operaatio.equals("-pakkaa")) {
+				if (System.getProperty("pakkausalgoritmi").toLowerCase().equals("lzw")) {
+					pakkaaja = new LZWPakkaus(lahdeTiedostoNimi, kohdeTiedostoNimi);
+				} else {
+					pakkaaja = new HuffmanPakkaus(lahdeTiedostoNimi, kohdeTiedostoNimi);
+				}
 				System.out.println("Aloitetaan tiedoston " + args[1] + " pakkaus...");
 				System.out.println("Käytettävä pakkausalgoritmi: " + System.getProperty("pakkausalgoritmi"));
 				pakkaaja.pakkaaTiedosto();
 			} else {
 				if (operaatio.equals("-pura")) {
+					PurkuRajapinta purkaja;
+					if (System.getProperty("pakkausalgoritmi").toLowerCase().equals("lzw")) {
+						purkaja = new LZWPurku(lahdeTiedostoNimi, kohdeTiedostoNimi);
+					} else {
+						purkaja = new HuffmanPurku(lahdeTiedostoNimi, kohdeTiedostoNimi);
+					}
 					System.out.println("Aloitetaan tiedoston " + args[1] + " purku...");
+					
 					System.out.println("Pakkausalgoritmi: " + System.getProperty("pakkausalgoritmi"));
-					pakkaaja.puraTiedosto();
+					purkaja.puraTiedosto();
 				}
 			}
 			long kesto = System.currentTimeMillis() - aloitusAika;

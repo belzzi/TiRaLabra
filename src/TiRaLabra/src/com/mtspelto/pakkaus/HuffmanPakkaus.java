@@ -37,24 +37,12 @@ public class HuffmanPakkaus implements PakkausRajapinta {
 	 * Pakattaessa l‰hdetiedostosta kerralla luettavan lohkon vakiokoko.
 	 */
 	public static final int VAKIO_PAKKAUSBLOKKIKOKO = 1024;
-	
-	/**
-	 *  Purettavasta tiedostosta kerralla luettavan bin‰‰rilohkon vakiokoko
-	 *  Lohkon koon pit‰‰ aina olla v‰hint‰‰n pisimm‰n mahdollisen Huffman-koodin
-	 *  pituus, eli ainakin 16 tavua.
-	 */
-	public static final int VAKIO_PURKUBLOKKIKOKO = 128;
-	
+		
 	/** Pakattaessa l‰hdetiedostosta kerralla luettavan lohkon koko.
 	 * 
 	 */
 	private int pakkausBlokkiKoko;
-	
-	/** Purettavasta tiedostosta kerralla luettavan bin‰‰rilohkon vakiokoko
-	 * 
-	 */
-	private int purkuBlokkiKoko;
-	
+		
 	/** L‰hdetiedosto
 	 * 
 	 */
@@ -83,7 +71,6 @@ public class HuffmanPakkaus implements PakkausRajapinta {
 	 * @param kohde Kohdetiedoston nimi
 	 */
 	public HuffmanPakkaus(File lahde, File kohde) {
-		this.purkuBlokkiKoko = VAKIO_PURKUBLOKKIKOKO;
 		this.pakkausBlokkiKoko = VAKIO_PAKKAUSBLOKKIKOKO;
 		merkistaKoodi = new HajautusTaulukko();
 		koodistaMerkki = new HajautusTaulukko();
@@ -100,8 +87,7 @@ public class HuffmanPakkaus implements PakkausRajapinta {
 	 * @param pakkausBlokkiKoko Pakattaessa k‰ytett‰v‰ blokkikoko
 	 * @param purkuBlokkiKoko Purettaessa k‰ytett‰v‰ blokkikoko
 	 */
-	public HuffmanPakkaus(File lahde, File kohde, int pakkausBlokkiKoko, int purkuBlokkiKoko) {
-		this.purkuBlokkiKoko = purkuBlokkiKoko;
+	public HuffmanPakkaus(File lahde, File kohde, int pakkausBlokkiKoko) {
 		this.pakkausBlokkiKoko = pakkausBlokkiKoko;
 		merkistaKoodi = new HajautusTaulukko();
 		koodistaMerkki = new HajautusTaulukko();
@@ -134,72 +120,6 @@ public class HuffmanPakkaus implements PakkausRajapinta {
 		}
 	}
 	
-	/**
-	 * Pakatun tiedoston purkamisen p‰‰metodi. T‰ss‰ vaiheessa tyhj‰ toteutus rajapinnan toteuttamiseksi.
-	 * @throws ClassNotFoundException 
-	 * 
-	 */
-	public boolean puraTiedosto() throws FileNotFoundException, IOException, ClassNotFoundException {
-		FileInputStream fis = new FileInputStream(lahde);
-		BufferedInputStream bis = new BufferedInputStream(fis);
-		ObjectInputStream ois = new ObjectInputStream(bis);
-		byte[] luetutKoodiTavut = new byte[purkuBlokkiKoko];
-		
-		// Sanaston luku erillisest‰ .ser tiedostosta 
-		//ObjectInputStream ois = new ObjectInputStream(new FileInputStream(lahde.getAbsoluteFile() + ".ser"));  
-		
-		BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(kohde));
-		
-		koodistaMerkki = (HajautusTaulukko)ois.readObject();
-		
-		if (DEBUG) {
-			Iterator it = koodistaMerkki.avaimet();
-			Iterator it2 = koodistaMerkki.arvot();
-			while (it.hasNext()) {
-				char c = (char)it2.next();
-				System.out.println(it.next().toString() + ": " + c);
-			}
-		}
-		
-		StringBuilder lohkonKoodiMerkit = new StringBuilder();
-		int tavujaLuettu = 0;
-		
-		StringBuilder lohkonSelkoTeksti;
-		StringBuilder nykyisenMerkinKoodi = new StringBuilder();
-
-		// Luetaan pakattua dataa tiedostosta lohkon koon verran kerrallaan
-		while ((tavujaLuettu = bis.read(luetutKoodiTavut))>0) {
-			lohkonSelkoTeksti = new StringBuilder();
-			lohkonKoodiMerkit = nykyisenMerkinKoodi;
-			nykyisenMerkinKoodi = new StringBuilder();
-			//K‰yd‰‰n lohkon jokainen tavu l‰pi
-			for (int i = 0; i < tavujaLuettu; i++) {
-				// k‰yd‰‰n jokaisen tavun jokainen bitti l‰pi, ja lis‰t‰‰n puskuriin
-				for (int j = 7; j>=0; j--) {
-					if ((luetutKoodiTavut[i] & (1 << j)) != 0)
-						lohkonKoodiMerkit.append("1");
-					else
-						lohkonKoodiMerkit.append("0");
-				}
-			}
-			char[] lohkonKoodiMerkitTaulukko = lohkonKoodiMerkit.toString().toCharArray();
-	
-			for (int k = 0; k<lohkonKoodiMerkitTaulukko.length; k++) {
-				nykyisenMerkinKoodi.append(lohkonKoodiMerkitTaulukko[k]);
-				Object o = koodistaMerkki.annaArvo(nykyisenMerkinKoodi.toString());
-				if (o != null) {
-					lohkonSelkoTeksti.append(o.toString());
-					nykyisenMerkinKoodi = new StringBuilder();
-				} 
-			}
-			bos.write(lohkonSelkoTeksti.toString().getBytes());
-		}
-		bos.flush();
-		bis.close();
-		fis.close();
-		bos.close();
-		return false;
-	}
 	
 	/**
 	 * Tiedoston pakkauksen p‰‰metodi. 
@@ -210,20 +130,15 @@ public class HuffmanPakkaus implements PakkausRajapinta {
 	@Override
 	public boolean pakkaaTiedosto() throws FileNotFoundException, IOException {
 		BufferedReader r = new BufferedReader(new FileReader(lahde));
-		//BufferedWriter w = new BufferedWriter(new FileWriter(kohde));
 		FileOutputStream fos = new FileOutputStream(kohde);
 		BufferedOutputStream bos = new BufferedOutputStream(fos);
-		
-		//FileOutputStream fos2 = new FileOutputStream(kohde.getAbsoluteFile() + ".ser");
 		ObjectOutputStream oos = new ObjectOutputStream(fos);
 		
 		try {
 			HajautusTaulukko esiintyvyydet = annaEsiintyvyydet(r);
 			r.close();
 			
-			//J‰rjestet‰‰n merkit esiintyvyyden perusteella PrioriteettiJonoa k‰ytt‰en ##TODO: Tee oma PrioriteettiJono
-			//PriorityQueue<HuffmanPuuSisaSolmu> jono = priorisoiAvaimet(avaimet.iterator(), arvot.iterator());
-			
+			//J‰rjestet‰‰n merkit esiintyvyyden perusteella MinimiKekoa k‰ytt‰en
 			MinimiKeko jono = priorisoiAvaimet(esiintyvyydet.avaimet(), esiintyvyydet.arvot());
 			HuffmanPuuSisaSolmu juuri = luoHuffmanPuu(jono);
 			luoMerkkiKoodiTaulukot(juuri, "");
@@ -276,7 +191,6 @@ public class HuffmanPakkaus implements PakkausRajapinta {
 			//Kirjoitetaan jokainen merkki Huffman-koodina StringBufferiin...
 			
 			for (int i = 0; i < loopissaTavujaLuettu; i++) {
-				//sb.append((String)merkistaKoodi.get(lahdeTaulukko[i]));
 				byte[] koodi = ((String)merkistaKoodi.annaArvo(lahdeTaulukko[i])).getBytes();
 				for (int j = 0; j < koodi.length; j++) {
 					bittiLaskuri++;
