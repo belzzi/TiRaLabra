@@ -1,0 +1,14 @@
+<project name="TiRaLabra" default="assemble" basedir=".">
+	<target name="assemble">
+		<delete>
+		    <fileset dir="dist" includes="*.jar"/>
+		</delete>
+		<mkdir dir="dist"/>
+		<jar
+			destfile="dist/Pakkaaja.jar"
+			basedir="../bin"
+			manifest="manifest.mf"
+			includes="**/*.class"
+			excludes="**/test/*.class" />
+	</target>
+</project>

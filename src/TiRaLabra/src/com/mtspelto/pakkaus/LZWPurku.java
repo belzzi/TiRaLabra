@@ -10,6 +10,12 @@ import java.io.IOException;
 
 import com.mtspelto.pakkaus.tietorakenteet.HajautusTaulukko;
 
+/** LZW-algoritmin purkuohjelma.
+ * 
+ * @author mpeltonen
+ * @see com.mtspelto.pakkaus.LZWPakkaus
+ * @see com.mtspelto.pakkaus.PurkuRajapinta
+ */
 public class LZWPurku implements PurkuRajapinta {
 
 	/** Lähdetiedosto
@@ -46,7 +52,7 @@ public class LZWPurku implements PurkuRajapinta {
 	/** Purkaa lähdetiedoston ja kirjoittaa puretun datan kohdetiedostoon.
 	 * 
 	 * @return true mikäli pakkaus onnistui, muutoin false
-	 * @see com.mtspelto.pakkaus.PakkausRajapinta#puraTiedosto()
+	 * @see com.mtspelto.pakkaus.PurkuRajapinta#puraTiedosto()
 	 */
 	@Override
 	public boolean puraTiedosto() throws FileNotFoundException, IOException {
@@ -98,7 +104,6 @@ public class LZWPurku implements PurkuRajapinta {
 	    	 System.out.println("Yhteensä " + bittiLaskuri/8+ " tavua pakattua dataa luettu");
 	    	 System.out.println("Yhteensä " + tavuLaskuri + " tavua purettua dataa kirjoitettu");	     
 	     }
-	     System.out.println("Sanaston koko lopussa: " + suurinKoodi);
 	     bis.close();
 	     bos.flush();
 	     bos.close();

@@ -17,7 +17,7 @@ public class Pakkaaja {
 	 * 
 	 * Vakiona ohjelma k‰ytt‰‰ pakkausalgoritmina Huffman-koodausta. Pakkausalgoritmi voidaan asettaa komentorivilt‰ 
 	 * system propertyll‰ "pakkausalgoritmi", ja tuntee arvot "lzw" tai "huffman". Esim.
-	 * java -jar Pakkaaja.jar -Dpakkausalgoritmi=lzw -pakkaa <l‰hdetiedosto> <kohdetiedosto>
+	 * java -Dpakkausalgoritmi=lzw -jar Pakkaaja.jar -pakkaa <l‰hdetiedosto> <kohdetiedosto>
 	 * 
 	 * @param args Ensimm‰inen parametri t‰ytyy olla operaation nimi (joko -pakkaa tai -pura), toinen l‰hdetiedoston ja kolmas kohdetiedoston nimi.
 	 * @see com.mtspelto.pakkaus#HuffmanPakkaus

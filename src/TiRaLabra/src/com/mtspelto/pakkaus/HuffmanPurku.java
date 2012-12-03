@@ -11,9 +11,10 @@ import com.mtspelto.pakkaus.tietorakenteet.MinimiKeko;
 
 
 /**
- * Huffman-algoritmin totetuttava pakkaus- ja purkuohjelma.
+ * Huffman-algoritmin purkuohjelma.
  * 
- * @see com.mtspelto.pakkaus.Pakkaaja
+ * @see com.mtspelto.pakkaus.PurkuRajapinta
+ * @see com.mtspelto.pakkaus.HuffmanPakkaus
  * @author mikkop
  *
  */
@@ -88,30 +89,6 @@ public class HuffmanPurku implements PurkuRajapinta {
 		this.kohde = kohde;
 	}
 	
-	/**
-	 * Metodi joka tulostaa molemmat kooditaulukot System.out:iin.
-	 * 
-	 */
-	public void tulostaTaulukot() {
-		Iterator arvot = merkistaKoodi.arvot();
-		Iterator avaimet = merkistaKoodi.avaimet();
-		System.out.println("##DEBUG: Yhteens‰ " + merkistaKoodi.annaKoko() + " koodia tallennettu.\n\nMerkist‰ koodi- taulukko:");
-		System.out.println("MERKKI     KOODI\n----------------");
-		while (arvot.hasNext()) {
-			String arvo = (String)arvot.next();
-			Character avain = (Character)avaimet.next();
-			System.out.println(avain + "          " + arvo);
-		}
-		arvot = koodistaMerkki.arvot();
-		avaimet = koodistaMerkki.avaimet();
-		System.out.println("\n\n##DEBUG: Koodista merkki- taulukko:");
-		System.out.println("KOODI      MERKKI\n----------------");
-		while (arvot.hasNext()) {
-			Character arvo = (Character)arvot.next();
-			String avain = (String)avaimet.next();
-			System.out.println(avain + "          " + arvo);
-		}
-	}
 	
 	/**
 	 * Pakatun tiedoston purkamisen p‰‰metodi. T‰ss‰ vaiheessa tyhj‰ toteutus rajapinnan toteuttamiseksi.
@@ -121,13 +98,17 @@ public class HuffmanPurku implements PurkuRajapinta {
 	public boolean puraTiedosto() throws FileNotFoundException, IOException, ClassNotFoundException {
 		FileInputStream fis = new FileInputStream(lahde);
 		BufferedInputStream bis = new BufferedInputStream(fis);
-		ObjectInputStream ois = new ObjectInputStream(bis);
+
 		byte[] luetutKoodiTavut = new byte[purkuBlokkiKoko];
-				
+		
+		//FileInputStream fis2 = new FileInputStream(lahde.getAbsolutePath()+ ".ser");
+		ObjectInputStream ois = new ObjectInputStream(fis);
+		
 		BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(kohde));
 		
 		koodistaMerkki = (HajautusTaulukko)ois.readObject();
-		
+		Long kohdePituus = (Long)ois.readObject();
+		System.out.println("Puretaan " + kohdePituus + " tavua dataa...");
 		if (DEBUG) {
 			Iterator it = koodistaMerkki.avaimet();
 			Iterator it2 = koodistaMerkki.arvot();
@@ -139,6 +120,7 @@ public class HuffmanPurku implements PurkuRajapinta {
 		
 		StringBuilder lohkonKoodiMerkit = new StringBuilder();
 		int tavujaLuettu = 0;
+		long tavujaKirjoitettu = 0;
 		
 		StringBuilder lohkonSelkoTeksti;
 		StringBuilder nykyisenMerkinKoodi = new StringBuilder();
@@ -161,14 +143,18 @@ public class HuffmanPurku implements PurkuRajapinta {
 			char[] lohkonKoodiMerkitTaulukko = lohkonKoodiMerkit.toString().toCharArray();
 	
 			for (int k = 0; k<lohkonKoodiMerkitTaulukko.length; k++) {
-				nykyisenMerkinKoodi.append(lohkonKoodiMerkitTaulukko[k]);
-				Object o = koodistaMerkki.annaArvo(nykyisenMerkinKoodi.toString());
-				if (o != null) {
-					lohkonSelkoTeksti.append(o.toString());
-					nykyisenMerkinKoodi = new StringBuilder();
-				} 
+				if (tavujaKirjoitettu < kohdePituus) {
+					nykyisenMerkinKoodi.append(lohkonKoodiMerkitTaulukko[k]);
+					Object o = koodistaMerkki.annaArvo(nykyisenMerkinKoodi.toString());
+					if (o != null) {
+						lohkonSelkoTeksti.append(o.toString());
+						nykyisenMerkinKoodi = new StringBuilder();
+						tavujaKirjoitettu++;
+					}
+				}
 			}
 			bos.write(lohkonSelkoTeksti.toString().getBytes());
+			
 		}
 		bos.flush();
 		bis.close();

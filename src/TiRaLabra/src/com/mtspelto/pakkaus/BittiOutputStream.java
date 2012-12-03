@@ -40,6 +40,13 @@ public class BittiOutputStream extends OutputStream {
         0xfffffff,0x1fffffff,0x3fffffff,0x7fffffff,0xffffffff
     };
 
+    /* Bittien arvot biteille 0-8.
+     * Näitä käytetään asetettaessa tietty bitti.
+     *  
+     */
+    static final int BITTIARVOT[] = {1,2,4,8,16,32,64,128};
+
+    
     /** Kirjoittaa 8 alinta tavua annetusta kokonaisluvusta.
      * 
      * @param luku 
@@ -64,6 +71,7 @@ public class BittiOutputStream extends OutputStream {
      */
     public void flush() {
         if (puskurinKoko > 0) {
+        	
         	int kirjoitettava = (bittiPuskuri << 8-puskurinKoko);
        		try{
        			kohde.write( (kirjoitettava) );
@@ -119,34 +127,29 @@ public class BittiOutputStream extends OutputStream {
      * @param bittiMaara montako alinta bittiä bitit-muuttujasta kirjoitetaan
      * @param bitit kokonaisluku josta kirjoitetaan <code>bittiMaara</code> alinta bittiä
      */    
-    public void write(int bittiMaara, int bitit) throws IOException {    	
+    public void write(int bittiMaara, int bitit) throws IOException {
+    	// nollataan ei-pyydetyt bitit
+    	bitit = (bitit & BITTIMASKIT[bittiMaara]);
     	if (DEBUG)
     		System.out.println(" Pyydetyt bitit: " + annaBittiStringi(bitit, bittiMaara));
     	if (DEBUG)
     		System.out.println(" BittiPuskuri ennen kirjoitusta: " + annaBittiStringi(bittiPuskuri, puskurinKoko));
     	
-    	int vanhaPuskurinKoko = puskurinKoko == 0?bittiMaara-8:puskurinKoko;
     	puskurinKoko += bittiMaara;
-        
-        while (puskurinKoko >= 8){
-        	//Nyt pitää saada bittiPuskurin vanha sisältö bittiPuskurin alkuun, ja sen pituuden verran vasemmalle siirrettynä uudet bitit liitettyä perään
-        	
-        	bittiPuskuri = (bittiPuskuri << (puskurinKoko - vanhaPuskurinKoko)) | bitit;
-        	bittiPuskuri = (bittiPuskuri >> (puskurinKoko - 8));
-        	
-        	bittiMaara = bittiMaara -8;
-        	if (DEBUG)
-        		System.out.println(" Levylle: " + annaBittiStringi(bittiPuskuri, 8));
-			kohde.write(bittiPuskuri);
+    	bittiPuskuri = (bittiPuskuri << bittiMaara) | bitit;
+
+    	while (puskurinKoko >= 8) {
+    		if (DEBUG)
+    			System.out.println("  Levylle: " + annaBittiStringi(bittiPuskuri >> (puskurinKoko - 8), 8));
+			kohde.write(bittiPuskuri >> (puskurinKoko -8));
 			puskurinKoko -= 8;
-        	bittiPuskuri = bittiPuskuri << 8;
-        }
-		//Jos bittejä jäi yli, jätetään ne puskuriin
-        if (bittiMaara > 0) {
-        	bittiPuskuri = (bitit & BITTIMASKIT[bittiMaara]);
-            if (DEBUG)
-            	System.out.println(" Bittipuskuriin jäi: " + annaBittiStringi(bittiPuskuri, 31));
-        }
+        	bittiPuskuri = bittiPuskuri & BITTIMASKIT[puskurinKoko];
+    	}
+    	if (DEBUG)
+    		System.out.println(" BittiPuskuri kirjoituksen jälkeen: " + annaBittiStringi(bittiPuskuri, puskurinKoko));
+      if (puskurinKoko == 0)
+    	bittiPuskuri = 0;
+
     }      
 }        
         

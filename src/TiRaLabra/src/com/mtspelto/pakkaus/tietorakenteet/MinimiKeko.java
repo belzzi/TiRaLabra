@@ -146,7 +146,7 @@ public class MinimiKeko {
 	 * @param solmu
 	 * @return vanhempi
 	 */
-	public int vanhempi(int solmu) {
+	protected int vanhempi(int solmu) {
 		if (solmu == 0)
 			return -1;
 		if (solmu == 1)
@@ -160,7 +160,7 @@ public class MinimiKeko {
 	 * @param solmu
 	 * @return annetun solmun vasen lapsi
 	 */
-	public int vasen(int solmu) {
+	protected int vasen(int solmu) {
 		if (solmu == 0)
 			return 1;
 		else
@@ -172,7 +172,7 @@ public class MinimiKeko {
 	 * @param solmu
 	 * @return annetun solmun oikea lapsi
 	 */
-	public int oikea(int solmu) {
+	protected int oikea(int solmu) {
 		if (solmu == 0)
 			return 2;
 		return ((++solmu)*2);

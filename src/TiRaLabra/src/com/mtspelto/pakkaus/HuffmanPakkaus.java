@@ -11,7 +11,7 @@ import com.mtspelto.pakkaus.tietorakenteet.MinimiKeko;
 
 
 /**
- * Huffman-algoritmin totetuttava pakkaus- ja purkuohjelma.
+ * Huffman-algoritmin pakkausohjelma.
  * 
  * @see com.mtspelto.pakkaus.Pakkaaja
  * @author mikkop
@@ -36,7 +36,7 @@ public class HuffmanPakkaus implements PakkausRajapinta {
 	/**
 	 * Pakattaessa lähdetiedostosta kerralla luettavan lohkon vakiokoko.
 	 */
-	public static final int VAKIO_PAKKAUSBLOKKIKOKO = 1024;
+	public static final int VAKIO_PAKKAUSBLOKKIKOKO = 4096;
 		
 	/** Pakattaessa lähdetiedostosta kerralla luettavan lohkon koko.
 	 * 
@@ -85,7 +85,6 @@ public class HuffmanPakkaus implements PakkausRajapinta {
 	 * @param lahde Lähdetiedoston nimi
 	 * @param kohde Kohdetiedoston nimi
 	 * @param pakkausBlokkiKoko Pakattaessa käytettävä blokkikoko
-	 * @param purkuBlokkiKoko Purettaessa käytettävä blokkikoko
 	 */
 	public HuffmanPakkaus(File lahde, File kohde, int pakkausBlokkiKoko) {
 		this.pakkausBlokkiKoko = pakkausBlokkiKoko;
@@ -99,7 +98,7 @@ public class HuffmanPakkaus implements PakkausRajapinta {
 	 * Metodi joka tulostaa molemmat kooditaulukot System.out:iin.
 	 * 
 	 */
-	public void tulostaTaulukot() {
+	private void tulostaTaulukot() {
 		Iterator arvot = merkistaKoodi.arvot();
 		Iterator avaimet = merkistaKoodi.avaimet();
 		System.out.println("##DEBUG: Yhteensä " + merkistaKoodi.annaKoko() + " koodia tallennettu.\n\nMerkistä koodi- taulukko:");
@@ -135,6 +134,7 @@ public class HuffmanPakkaus implements PakkausRajapinta {
 		ObjectOutputStream oos = new ObjectOutputStream(fos);
 		
 		try {
+			long lahdePituus = lahde.length();
 			HajautusTaulukko esiintyvyydet = annaEsiintyvyydet(r);
 			r.close();
 			
@@ -147,19 +147,20 @@ public class HuffmanPakkaus implements PakkausRajapinta {
 			if (DEBUG)
 				tulostaTaulukot();
 
-			//kirjoitaSanasto(oos);
+			//kirjoitetaan sanasto objektina:
 			oos.writeObject(koodistaMerkki);
-			
+			//kirjoitetaan lähdetiedoston merkkien määrä Longina (vaaditaan viimeisen merkin katkaisua varten purussa!)
+			oos.writeObject(new Long(lahdePituus));
 			//Alustetaan r uudestaan lukemaan lähdetiedosto alusta
 			r = new BufferedReader(new FileReader(lahde));
-								
-			kirjoitaPakattuTiedosto(r,bos);
+			BittiOutputStream bios = new BittiOutputStream(bos);
+			kirjoitaPakattuTiedosto(r,bios);
+			bios.close();
 			r.close();
 			bos.flush();
 			bos.close();
 			fos.close();
-			oos.close();
-			
+			//oos.close();
 		} catch (Exception e) {
 			e.printStackTrace();
 			return false;
@@ -176,39 +177,41 @@ public class HuffmanPakkaus implements PakkausRajapinta {
 	 * @throws FileNotFoundException
 	 * @throws IOException
 	 */
-	public void kirjoitaPakattuTiedosto(BufferedReader r, BufferedOutputStream bos) throws FileNotFoundException, IOException {
+	private void kirjoitaPakattuTiedosto(BufferedReader r, BittiOutputStream bos) throws FileNotFoundException, IOException {
+		
 		char[] lahdeTaulukko = new char[pakkausBlokkiKoko];
 		int yhteensaTavujaLuettu = 0;
 		int loopissaTavujaLuettu = 0;
 		int yhteensaTavujaKirjoitettu = 0;
 			
 		byte tavu = 0;
-		int bittiLaskuri = 0;
+		int yhteensaBittiLaskuri = 0;
 		int tavuLaskuri = 0;
 		
-		byte[] jaljelleJaaneetMerkit = new byte[10];
 		while ((loopissaTavujaLuettu = r.read(lahdeTaulukko))>0) {
 			//Kirjoitetaan jokainen merkki Huffman-koodina StringBufferiin...
-			
+			yhteensaTavujaLuettu += loopissaTavujaLuettu;
 			for (int i = 0; i < loopissaTavujaLuettu; i++) {
 				byte[] koodi = ((String)merkistaKoodi.annaArvo(lahdeTaulukko[i])).getBytes();
+				int koodiBitit = 0;
 				for (int j = 0; j < koodi.length; j++) {
-					bittiLaskuri++;
-					tavu = (byte)(tavu << 1);
+					koodiBitit = koodiBitit << 1;
 					if (koodi[j] == '1')
-						tavu = (byte)(tavu | 1);
-					if (bittiLaskuri == 8) {
-						bos.write(tavu);
-						tavuLaskuri++;
-						bittiLaskuri = 0;
-					}
+						koodiBitit = koodiBitit | 1;
 				}
+				bos.write(koodi.length, koodiBitit);
+				yhteensaBittiLaskuri += koodi.length;
 			}
-			yhteensaTavujaLuettu += loopissaTavujaLuettu;
+		}
+		//Lasketaan biteistä kirjoitut tavut:
+		tavuLaskuri = yhteensaBittiLaskuri/8;
+		//..ja lisätään viimeinen tavu jos niitä ei ollut tasamäärä:
+		if ((yhteensaBittiLaskuri % 8) == 0) {
+			tavuLaskuri++;
 		}
 		System.out.println("Yhteensä " + yhteensaTavujaLuettu + " tavua luettu lähdetiedostosta");
 		System.out.println("Yhteensä " + tavuLaskuri + " tavua dataa kirjoitettu kohdetiedostoon");
-		double teho = 100-(double)tavuLaskuri / (double)yhteensaTavujaLuettu * 100;
+		double teho = (double)tavuLaskuri / (double)yhteensaTavujaLuettu * 100;
 		DecimalFormat df = new DecimalFormat("#.##");
 		System.out.println("Pakkaustehokkuus: " + df.format(teho) + " % (ei ota huomioon sanaston viemää tilaa)");
 	}
@@ -221,7 +224,7 @@ public class HuffmanPakkaus implements PakkausRajapinta {
 	 * @throws FileNotFoundException
 	 * @throws IOException
 	 */
-	public HajautusTaulukko annaEsiintyvyydet(BufferedReader r) throws FileNotFoundException, IOException {
+	private HajautusTaulukko annaEsiintyvyydet(BufferedReader r) throws FileNotFoundException, IOException {
 		HajautusTaulukko esiintyvyydet = new HajautusTaulukko();
 		
 		char[] lahdeTaulukko = new char[256];
@@ -249,7 +252,7 @@ public class HuffmanPakkaus implements PakkausRajapinta {
 	 * @param jono Lähdetekstissä esiintyvät merkit esiintyvyysjärjestyksessä
 	 * @return HuffmanPuuSisaSolmu Huffman-puurakenteen juuri
 	 */
-	public HuffmanPuuSisaSolmu luoHuffmanPuu(MinimiKeko jono) {
+	private HuffmanPuuSisaSolmu luoHuffmanPuu(MinimiKeko jono) {
 		HuffmanPuuSisaSolmu juuri;
 		HuffmanPuuSisaSolmu pieninFrekvenssi = null;
 		HuffmanPuuSisaSolmu toiseksiPienin = null;
@@ -263,7 +266,6 @@ public class HuffmanPakkaus implements PakkausRajapinta {
 			s.asetaOikea(toiseksiPienin);
 			jono.lisaa(s);
 		}
-		//juuri = (HuffmanPuuSisaSolmu)jono.remove();
 		juuri = (HuffmanPuuSisaSolmu)jono.annaPienin();
 		pieninFrekvenssi.asetaVanhempi(juuri);
 		toiseksiPienin.asetaVanhempi(juuri);
@@ -278,7 +280,7 @@ public class HuffmanPakkaus implements PakkausRajapinta {
 	 * @param arvot
 	 * @return PriorityQueue Järjestetty lista esiintyvyyksistä
 	 */
-	public MinimiKeko priorisoiAvaimet(Iterator avaimet, Iterator arvot) {
+	private MinimiKeko priorisoiAvaimet(Iterator avaimet, Iterator arvot) {
 		MinimiKeko jono = new MinimiKeko();
 		while (avaimet.hasNext()) {
 			char merkki = ((Character)avaimet.next()).charValue();
@@ -296,7 +298,7 @@ public class HuffmanPakkaus implements PakkausRajapinta {
 	 * @param s Huffman-puun solmu (sisäsolmu tai lehti)
 	 * @param koodi
 	 */
-	public void luoMerkkiKoodiTaulukot(HuffmanPuuSisaSolmu s, String koodi) {
+	private void luoMerkkiKoodiTaulukot(HuffmanPuuSisaSolmu s, String koodi) {
 		if (s instanceof HuffmanPuuLehti) {
 				char merkki = ((HuffmanPuuLehti)s).annaMerkki();
 				merkistaKoodi.lisaaElementti(merkki, koodi);

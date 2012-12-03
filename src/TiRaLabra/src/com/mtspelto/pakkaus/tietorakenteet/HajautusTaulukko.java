@@ -8,10 +8,10 @@ import javax.lang.model.element.ElementVisitor;
 
 /**
  * T‰m‰ luokka toteuttaa hajautustaulukon jonka avaimet ovat joko kokonaislukuja tai merkkijonoja.
- * Luokka k‰ytt‰‰ tiedon tallentamiseen HajautusTaulukonKetjutettuLista-luokkaa.
+ * Luokka k‰ytt‰‰ tiedon tallentamiseen KetjutettuLista-luokkaa.
  * 
  * @author mikkop
- * @see HajautusTaulukonKetjutettuLista
+ * @see KetjutettuLista
  */
 public class HajautusTaulukko implements Serializable {
 	/**
@@ -27,7 +27,7 @@ public class HajautusTaulukko implements Serializable {
 	/**
 	 * Tietorakenne tiedon s‰ilytt‰miseeen.
 	 */
-	private HajautusTaulukonKetjutettuLista[] listat;
+	private KetjutettuLista[] listat;
 	
 	/** Listan k‰ytt‰m‰n taulukon koko.
 	 *  
@@ -44,20 +44,42 @@ public class HajautusTaulukko implements Serializable {
 	 */
 	public HajautusTaulukko() {
 		listanKoko = VAKIOKOKO;
-		listat = new HajautusTaulukonKetjutettuLista[listanKoko];
+		listat = new KetjutettuLista[listanKoko];
 		for (int i = 0; i < listanKoko; i++) {
-			listat[i] = new HajautusTaulukonKetjutettuLista();
+			listat[i] = new KetjutettuLista();
 		}
 	}
+		
+	/** Kokonaislukuavaimimlle k‰ytett‰v‰ hajautusalgoritmi.
+	 * Laskee hajautuspaikan annetulle kokonaislukuavaimelle.
+	 * 
+	 * @param x
+	 * @return annetun kokonaislukuavaimen sijainnin taulukossa
+	 */
+	private int intHashCode(int x) {
+		return Math.abs(x) % listanKoko;
+	}
 	
+	/**
+	 * Merkkijonoavaimille k‰ytett‰v‰ hajautusalgoritmi.
+	 * Laskee hajautuspaikan annetulle merkkijonoavaimelle.
+	 * @param s Merkkijono
+	 * @return int Annetun merkkijonon sijainti hajautustaulukossa.
+	 */
+	private int stringHashCode(String s) {
+		int palautettava = Math.abs(s.hashCode()) % listanKoko;
+		return palautettava;
+	}
+
+
 	/**
 	 * Apumetodi joka valitsee oikean listan avaimelle
 	 * 
 	 * @param avain
-	 * @return HajautusTaulukonKetjutettuLista Ketjutettu lista johon avain tallennetaan
+	 * @return KetjutettuLista Ketjutettu lista johon avain tallennetaan
 	 */
-	public HajautusTaulukonKetjutettuLista valitseLista(Object avain) {
-		HajautusTaulukonKetjutettuLista palautettava = null;
+	private KetjutettuLista valitseLista(Object avain) {
+		KetjutettuLista palautettava = null;
 
 		if (avain instanceof Integer)
 			palautettava = listat[intHashCode(((Integer)avain).intValue())];
@@ -70,7 +92,15 @@ public class HajautusTaulukko implements Serializable {
 		}
 		return palautettava;
 	}
-	
+
+	/** Antaa hajautustaulukon nykyisen koon.
+	 * 
+	 * @return Nykyisten elementtien m‰‰r‰.
+	 */
+	public int annaKoko() {
+		return nykyinenKoko;
+	}
+
 	/**
 	 * Metodi joka lis‰‰ elementin hajautustaulukkoon.
 	 * 
@@ -104,36 +134,7 @@ public class HajautusTaulukko implements Serializable {
 			return lisaaElementti(avain, arvo);
 		}
 	}
-
-	/**
-	 * Merkkijonoavaimille k‰ytett‰v‰ hajautusalgoritmi.
-	 * Laskee hajautuspaikan annetulle merkkijonoavaimelle.
-	 * @param s Merkkijono
-	 * @return int Annetun merkkijonon sijainti hajautustaulukossa.
-	 */
-	public int stringHashCode(String s) {
-		int palautettava = Math.abs(s.hashCode()) % listanKoko;
-		return palautettava;
-	}
-	
-	/** Kokonaislukuavaimimlle k‰ytett‰v‰ hajautusalgoritmi.
-	 * Laskee hajautuspaikan annetulle kokonaislukuavaimelle.
-	 * 
-	 * @param x
-	 * @return annetun kokonaislukuavaimen sijainnin taulukossa
-	 */
-	public int intHashCode(int x) {
-		return Math.abs(x) % listanKoko;
-	}
-	
-	/** Antaa hajautustaulukon nykyisen koon.
-	 * 
-	 * @return Nykyisten elementtien m‰‰r‰.
-	 */
-	public int annaKoko() {
-		return nykyinenKoko;
-	}
-	
+		
 	/** Kertoo sis‰lt‰‰kˆ hajautustaulukko annetun avaimen.
 	 * 
 	 * @param avain
@@ -142,7 +143,7 @@ public class HajautusTaulukko implements Serializable {
 	public boolean sisaltaaAvaimen(Object avain) {
 		if (avain == null)
 			return false;
-		HajautusTaulukonKetjutettuLista lista = valitseLista(avain);
+		KetjutettuLista lista = valitseLista(avain);
 		if (lista != null)
 			return lista.sisaltaaAvaimen(avain);
 		return false;
@@ -156,7 +157,7 @@ public class HajautusTaulukko implements Serializable {
 	public Object annaArvo(Object avain) {
 		if (avain == null)
 			return null;
-		HajautusTaulukonKetjutettuLista lista = valitseLista(avain);
+		KetjutettuLista lista = valitseLista(avain);
 		if (lista != null)
 			return lista.annaElementtiAvaimella(avain);
 		return null;
@@ -214,7 +215,6 @@ public class HajautusTaulukko implements Serializable {
         			hakuPositio++;
         		}
         	}
-        	System.out.println("Konstruktoitu arvot");
         }
         
         /** Metodi jolla tarkistetaan onko iteratorissa viel‰ j‰ljell‰ yksi elementti.
@@ -324,7 +324,7 @@ public class HajautusTaulukko implements Serializable {
         	// Sitten etsit‰‰n onko sit‰ seuraavaa elementti‰ olemassa
         	if (seuraava.annaSeuraava() != null) {
         		seuraava = seuraava.annaSeuraava();
-        	}else {
+        	} else {
         		seuraava = null;
         		while (taulukonPositio < listat.length -1 && !seuraavaLoytynyt) {
         			taulukonPositio++;

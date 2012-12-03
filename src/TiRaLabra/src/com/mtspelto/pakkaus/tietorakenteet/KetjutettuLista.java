@@ -88,7 +88,7 @@ class Elementti implements Serializable {
  * @author mikkop
  *
  */
-public class HajautusTaulukonKetjutettuLista implements Serializable {
+public class KetjutettuLista implements Serializable {
 	
 	/**
 	 * 
@@ -236,7 +236,7 @@ public class HajautusTaulukonKetjutettuLista implements Serializable {
 	 * 
 	 * @param alku ensimmäinen elementti
 	 */
-	public void asetaAlku(Elementti alku) {
+	private void asetaAlku(Elementti alku) {
 		this.alku = alku;
 	}
 	

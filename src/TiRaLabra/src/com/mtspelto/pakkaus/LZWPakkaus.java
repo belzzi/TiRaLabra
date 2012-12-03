@@ -14,10 +14,10 @@ import java.text.DecimalFormat;
 
 import com.mtspelto.pakkaus.tietorakenteet.HajautusTaulukko;
 
-/** Tämä luokka toteuttaa Lempel-Ziv-Welch algoritmiin perustuvan tiedon pakkaus- ja purkuohjelman.
+/** Lempel-Ziv-Welch algoritmin pakkausohjelma.
  * 
  * @author mikkop
- *
+ * @see com.mtspelto.pakkaus.LZWPurku
  */
 public class LZWPakkaus implements PakkausRajapinta {
 
@@ -90,8 +90,6 @@ public class LZWPakkaus implements PakkausRajapinta {
 			if (!pakkausSanasto.sisaltaaAvaimen(merkkijono.toString())) {
 				int koodi = seuraavaKoodi++;
 				pakkausSanasto.lisaaElementti(merkkijono.toString(), koodi);
-				if (DEBUG)
-					System.out.println("Lisätty koodi " + koodi + ": " + merkkijono.toString());
 				merkkijono.deleteCharAt(merkkijono.length()-1);
 				int kirjoitettavaInt = (int)pakkausSanasto.annaArvo("" + merkkijono);
 				bos.write(12, kirjoitettavaInt);

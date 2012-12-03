@@ -19,7 +19,7 @@ import com.mtspelto.pakkaus.Pakkaaja;
  * @author mikkop
  * @see LZWPakkaus
  */
-public class LZWPakkausTest {
+public class LZWPakkausPurkuTest {
 
 	/** Lähdetiedostojen nimet
 	 * 

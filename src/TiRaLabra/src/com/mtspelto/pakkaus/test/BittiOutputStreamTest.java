@@ -40,8 +40,11 @@ public class BittiOutputStreamTest {
 		try {
 			FileOutputStream fos = new FileOutputStream("C:/Huffman-tmp/BittiOutputStream-test.out");
 			BittiOutputStream bos = new BittiOutputStream(fos);
+
 			//bos.write('a');
 			//bos.write('b');
+//			bos.write(8,6);
+//			bos.write(4,1);
 			bos.write(12,97); //000001100001
 			bos.write(12,256); //000100000000
 			bos.write(12,98);
@@ -54,6 +57,7 @@ public class BittiOutputStreamTest {
 			bos.close();
 		} catch (Exception e) {
 			e.printStackTrace();
+			fail("Exception");
 		}
 		//fail("Not yet implemented"); // TODO
 	}
