@@ -8,11 +8,6 @@ import java.io.*;
  *
  */
 public class BittiOutputStream extends OutputStream {
-
-	/** Virheidenetsintätila. Tulostaa jokaisen kirjoitetun tavun System.outiin
-	 * 
-	 */
-	private static final boolean DEBUG = false;
 	
 	/**
 	 * Kohdetiedosto
@@ -75,8 +70,6 @@ public class BittiOutputStream extends OutputStream {
         	int kirjoitettava = (bittiPuskuri << 8-puskurinKoko);
        		try{
        			kohde.write( (kirjoitettava) );
-       			if (DEBUG)
-       				System.out.println("  Flush: Levylle: " + annaBittiStringi(kirjoitettava, 32));
        		}
            	catch (java.io.IOException ioe){
            		ioe.printStackTrace();
@@ -130,23 +123,15 @@ public class BittiOutputStream extends OutputStream {
     public void write(int bittiMaara, int bitit) throws IOException {
     	// nollataan ei-pyydetyt bitit
     	bitit = (bitit & BITTIMASKIT[bittiMaara]);
-    	if (DEBUG)
-    		System.out.println(" Pyydetyt bitit: " + annaBittiStringi(bitit, bittiMaara));
-    	if (DEBUG)
-    		System.out.println(" BittiPuskuri ennen kirjoitusta: " + annaBittiStringi(bittiPuskuri, puskurinKoko));
     	
     	puskurinKoko += bittiMaara;
     	bittiPuskuri = (bittiPuskuri << bittiMaara) | bitit;
 
     	while (puskurinKoko >= 8) {
-    		if (DEBUG)
-    			System.out.println("  Levylle: " + annaBittiStringi(bittiPuskuri >> (puskurinKoko - 8), 8));
 			kohde.write(bittiPuskuri >> (puskurinKoko -8));
 			puskurinKoko -= 8;
         	bittiPuskuri = bittiPuskuri & BITTIMASKIT[puskurinKoko];
     	}
-    	if (DEBUG)
-    		System.out.println(" BittiPuskuri kirjoituksen jälkeen: " + annaBittiStringi(bittiPuskuri, puskurinKoko));
       if (puskurinKoko == 0)
     	bittiPuskuri = 0;
 

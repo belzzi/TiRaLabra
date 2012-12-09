@@ -30,12 +30,7 @@ public class LZWPakkaus implements PakkausRajapinta {
 	 * 
 	 */
 	private File kohde;
-	
-	/** Virheidenetsint‰tila p‰‰lle (true) / pois (false)
-	 * 
-	 */
-	private static final boolean DEBUG = false;
-		
+			
 	/** Sanasto t‰lle pakkaus / purkuoperaatiolle.
 	 *  Avaimena k‰ytet‰‰n merkkijonoa ja arvona kokonaislukua.
 	 */	

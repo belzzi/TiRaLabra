@@ -19,13 +19,7 @@ import com.mtspelto.pakkaus.tietorakenteet.MinimiKeko;
  *
  */
 public class HuffmanPurku implements PurkuRajapinta {
-	
-	
-	/**
-	 * Lippu jolla kytket‰‰n virheenetsint‰tila p‰‰lle / pois.
-	 */
-	public static final boolean DEBUG = false;
-			
+				
 	/**
 	 *  Purettavasta tiedostosta kerralla luettavan bin‰‰rilohkon vakiokoko
 	 *  Lohkon koon pit‰‰ aina olla v‰hint‰‰n pisimm‰n mahdollisen Huffman-koodin
@@ -109,14 +103,6 @@ public class HuffmanPurku implements PurkuRajapinta {
 		koodistaMerkki = (HajautusTaulukko)ois.readObject();
 		Long kohdePituus = (Long)ois.readObject();
 		System.out.println("Puretaan " + kohdePituus + " tavua dataa...");
-		if (DEBUG) {
-			Iterator it = koodistaMerkki.avaimet();
-			Iterator it2 = koodistaMerkki.arvot();
-			while (it.hasNext()) {
-				char c = (char)it2.next();
-				System.out.println(it.next().toString() + ": " + c);
-			}
-		}
 		
 		StringBuilder lohkonKoodiMerkit = new StringBuilder();
 		int tavujaLuettu = 0;

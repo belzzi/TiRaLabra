@@ -18,13 +18,7 @@ import com.mtspelto.pakkaus.tietorakenteet.MinimiKeko;
  *
  */
 public class HuffmanPakkaus implements PakkausRajapinta {
-	
-	
-	/**
-	 * Lippu jolla kytket‰‰n virheenetsint‰tila p‰‰lle / pois.
-	 */
-	public static final boolean DEBUG = false;
-	
+		
 	/**
 	 * Lippu, jonka ollessa p‰‰ll‰, pakatessa kohdetiedostoon kirjoitetaan
 	 * Huffman-koodit raakana (ei siis bittein‰).
@@ -94,30 +88,6 @@ public class HuffmanPakkaus implements PakkausRajapinta {
 		this.kohde = kohde;
 	}
 	
-	/**
-	 * Metodi joka tulostaa molemmat kooditaulukot System.out:iin.
-	 * 
-	 */
-	private void tulostaTaulukot() {
-		Iterator arvot = merkistaKoodi.arvot();
-		Iterator avaimet = merkistaKoodi.avaimet();
-		System.out.println("##DEBUG: Yhteens‰ " + merkistaKoodi.annaKoko() + " koodia tallennettu.\n\nMerkist‰ koodi- taulukko:");
-		System.out.println("MERKKI     KOODI\n----------------");
-		while (arvot.hasNext()) {
-			String arvo = (String)arvot.next();
-			Character avain = (Character)avaimet.next();
-			System.out.println(avain + "          " + arvo);
-		}
-		arvot = koodistaMerkki.arvot();
-		avaimet = koodistaMerkki.avaimet();
-		System.out.println("\n\n##DEBUG: Koodista merkki- taulukko:");
-		System.out.println("KOODI      MERKKI\n----------------");
-		while (arvot.hasNext()) {
-			Character arvo = (Character)arvot.next();
-			String avain = (String)avaimet.next();
-			System.out.println(avain + "          " + arvo);
-		}
-	}
 	
 	
 	/**
@@ -144,9 +114,6 @@ public class HuffmanPakkaus implements PakkausRajapinta {
 			luoMerkkiKoodiTaulukot(juuri, "");
 			System.out.println("Merkkitaulukot luotu");
 			
-			if (DEBUG)
-				tulostaTaulukot();
-
 			//kirjoitetaan sanasto objektina:
 			oos.writeObject(koodistaMerkki);
 			//kirjoitetaan l‰hdetiedoston merkkien m‰‰r‰ Longina (vaaditaan viimeisen merkin katkaisua varten purussa!)
@@ -160,7 +127,6 @@ public class HuffmanPakkaus implements PakkausRajapinta {
 			bos.flush();
 			bos.close();
 			fos.close();
-			//oos.close();
 		} catch (Exception e) {
 			e.printStackTrace();
 			return false;

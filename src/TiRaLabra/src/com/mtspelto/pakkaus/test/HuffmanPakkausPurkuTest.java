@@ -22,26 +22,32 @@ import com.mtspelto.pakkaus.Pakkaaja;
  * @see com.mtspelto.pakkaus#HuffmanPakkaus
  */
 public class HuffmanPakkausPurkuTest {
-
-	String fileName1 = "C:/Huffman-tmp/testitiedosto1_4k.txt";
-	String fileName2 = "C:/Huffman-tmp/testitiedosto2_100k.txt";
-	String fileName3 = "C:/Huffman-tmp/testitiedosto3_500k.xml";
+	/** Lähdetiedostojen nimet
+	 * 
+	 */
+	String fileName1 = "C:/Huffman-tmp/testitiedosto1_180k.txt";
+	String fileName2 = "C:/Huffman-tmp/testitiedosto2_500k.xml";
+	String fileName3 = "C:/Huffman-tmp/testitiedosto3_13M.txt";
 	String fileName4 = "C:/Huffman-tmp/testitiedosto4_20M.xml";
 	String fileName5 = "C:/Huffman-tmp/testitiedosto5_115M.xml";
 
-	
-	String fileName1Pak = "C:/Huffman-tmp/testitiedosto1_4k.huf";
-	String fileName2Pak = "C:/Huffman-tmp/testitiedosto2_100k.huf";
-	String fileName3Pak = "C:/Huffman-tmp/testitiedosto3_500k.huf";
-	String fileName4Pak = "C:/Huffman-tmp/testitiedosto4_20M.huf";
-	String fileName5Pak = "C:/Huffman-tmp/testitiedosto5_115M.huf";
-
-	String fileName1Pur = "C:/Huffman-tmp/testitiedosto1_4k.hpur";
-	String fileName2Pur = "C:/Huffman-tmp/testitiedosto2_100k.hpur";
-	String fileName3Pur = "C:/Huffman-tmp/testitiedosto3_500k.hpur";
-	String fileName4Pur = "C:/Huffman-tmp/testitiedosto4_20M.hpur";
-	String fileName5Pur = "C:/Huffman-tmp/testitiedosto5_115M.hpur";
-
+	/** Pakattujen tiedostojen nimet
+	 * 	
+	 */
+		String fileName1Pak = "C:/Huffman-tmp/testitiedosto1_180k.huf";
+		String fileName2Pak = "C:/Huffman-tmp/testitiedosto2_500k.huf";
+		String fileName3Pak = "C:/Huffman-tmp/testitiedosto3_13M.huf";
+		String fileName4Pak = "C:/Huffman-tmp/testitiedosto4_20M.huf";
+		String fileName5Pak = "C:/Huffman-tmp/testitiedosto5_115M.huf";
+		
+		/** Purettujen tiedostojen nimet
+		 * 
+		 */
+		String fileName1Pur = "C:/Huffman-tmp/testitiedosto1_180k.hpur";
+		String fileName2Pur = "C:/Huffman-tmp/testitiedosto2_500k.hpur";
+		String fileName3Pur = "C:/Huffman-tmp/testitiedosto3_13M.hpur";
+		String fileName4Pur = "C:/Huffman-tmp/testitiedosto4_20M.hpur";
+		String fileName5Pur = "C:/Huffman-tmp/testitiedosto5_115M.hpur";
 	
 	/**
 	 * @throws java.lang.Exception
@@ -92,6 +98,7 @@ public class HuffmanPakkausPurkuTest {
 			Pakkaaja.main(new String[]{"-pura",fileName3Pak, fileName3Pur});
 			Pakkaaja.main(new String[]{"-pura",fileName4Pak, fileName4Pur});
 			Pakkaaja.main(new String[]{"-pura",fileName5Pak, fileName5Pur});
+
 		} catch (Exception e) {
 			
 			e.printStackTrace();

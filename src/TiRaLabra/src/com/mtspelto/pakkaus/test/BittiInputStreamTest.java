@@ -14,7 +14,9 @@ import org.junit.Test;
 
 import com.mtspelto.pakkaus.BittiInputStream;
 
-/** Yksikkötesti BittiInputStream-luokalle.
+/** Yksikkötesti BittiInputStream-luokalle. Huomio: tämän testi menee läpi
+ * ainoastaan jos BittiOutputStream-luokan yksikkötesti on ajettu ensin, 
+ * sillä tämä luokka käyttää syötteenä BittiOutputStreamin tulostetta.
  * 
  * @author mikkop
  * @see com.mtspelto.pakkaus#BittiInputStream

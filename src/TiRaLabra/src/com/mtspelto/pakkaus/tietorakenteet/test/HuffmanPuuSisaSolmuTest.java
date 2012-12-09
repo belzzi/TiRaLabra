@@ -11,10 +11,11 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import com.mtspelto.pakkaus.tietorakenteet.HuffmanPuuLehti;
 import com.mtspelto.pakkaus.tietorakenteet.HuffmanPuuSisaSolmu;
 
 
-/** Yksikkötesti Huffman-puulle.
+/** Yksikkötesti Huffman-puulle (testaa luokat HuffmanPuuSisaSolmu ja HuffmanPuuLehti).
  * 
  * @author mikkop
  *
@@ -54,9 +55,18 @@ public class HuffmanPuuSisaSolmuTest {
 	 */
 	@Test
 	public void testHuffmanPuuSisaSolmuIntHuffmanPuuSisaSolmuHuffmanPuuSisaSolmuHuffmanPuuSisaSolmu() {
-	//	HuffmanPuuSisaSolmu hpss = new HuffmanPuuSisaSolmu();
-		fail("Not yet implemented"); // TODO
-		//assertEquals("1", "1");
+		HuffmanPuuLehti hplA5 = new HuffmanPuuLehti('a',5);
+		HuffmanPuuLehti hplB3 = new HuffmanPuuLehti('b',3);
+		HuffmanPuuSisaSolmu ab8 = new HuffmanPuuSisaSolmu(8);
+		ab8.asetaVasen(hplA5);
+		ab8.asetaOikea(hplB3);
+		hplA5.asetaVanhempi(ab8);
+		hplB3.asetaVanhempi(ab8);	
+		assertEquals(hplA5, ab8.annaVasenLapsi());
+		assertEquals(hplB3, ab8.annaOikeaLapsi());
+		assertEquals(ab8, hplB3.annaVanhempi());
+		assertTrue((hplA5.annaFrekvenssi() == 5));
+		assertTrue((ab8.annaFrekvenssi() == 8));
 
 	}
 

@@ -25,8 +25,11 @@ public class Pakkaaja {
 	 */
 	public static void main(String[] args) {
 
-		//System.out.println("Pakkausalgoritmi: " + System.getProperty("pakkausalgoritmi"));
+		//System.out.println("Pakkausalgoritmi: " + );
 		long aloitusAika = System.currentTimeMillis();
+		String algoritmi = System.getProperty("pakkausalgoritmi");
+		if (algoritmi == null)
+			algoritmi = "huffman";
 		if (args.length != 3) {
 			System.out.println("V‰‰r‰ m‰‰r‰ argumentteja. Anna argumenttina operaatio (joko -pakkaa tai -pura), pakattavan tiedoston ja kohdetiedoston nimi.");
 			System.exit(1);
@@ -46,7 +49,7 @@ public class Pakkaaja {
 		try {
 			PakkausRajapinta pakkaaja;
 			if (operaatio.equals("-pakkaa")) {
-				if (System.getProperty("pakkausalgoritmi").toLowerCase().equals("lzw")) {
+				if (algoritmi.toLowerCase().equals("lzw")) {
 					pakkaaja = new LZWPakkaus(lahdeTiedostoNimi, kohdeTiedostoNimi);
 				} else {
 					pakkaaja = new HuffmanPakkaus(lahdeTiedostoNimi, kohdeTiedostoNimi);
@@ -57,7 +60,7 @@ public class Pakkaaja {
 			} else {
 				if (operaatio.equals("-pura")) {
 					PurkuRajapinta purkaja;
-					if (System.getProperty("pakkausalgoritmi").toLowerCase().equals("lzw")) {
+					if (algoritmi.toLowerCase().equals("lzw")) {
 						purkaja = new LZWPurku(lahdeTiedostoNimi, kohdeTiedostoNimi);
 					} else {
 						purkaja = new HuffmanPurku(lahdeTiedostoNimi, kohdeTiedostoNimi);

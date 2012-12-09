@@ -7,11 +7,6 @@ import java.io.*;
  *
  */
 public class BittiInputStream extends InputStream {
-
-	/** Virheidenetsintätila.
-	 * 
-	 */
-	private static final boolean DEBUG = false;
 	
 	/** Lähdetiedoston InputStream
 	 * 
@@ -23,7 +18,7 @@ public class BittiInputStream extends InputStream {
      */
     private int bittiPuskuri;
 	
-    /** bittiPuskurin nykyinen koko
+    /** bittiPuskurin nykyinen koko bitteinä
      * 
      */
     private int puskurinKoko;
@@ -95,14 +90,8 @@ public class BittiInputStream extends InputStream {
 					if (luettu == -1) {
 						return -1;
 					}
-					if (DEBUG)
-						System.out.println(" Luettu tavu: " + annaBittiStringi(luettu, 8));
-					if (DEBUG)
-						System.out.println(" bittiPuskuri ennen lisäystä: " + annaBittiStringi(bittiPuskuri, puskurinKoko));
 					bittiPuskuri = bittiPuskuri << 8 | luettu;
 					puskurinKoko += 8;
-					if (DEBUG)
-						System.out.println(" bittiPuskuri lisäyksen jälkeen: " + annaBittiStringi(bittiPuskuri, puskurinKoko));
 				} catch (IOException ioe) {
 					ioe.printStackTrace();
 					return -1;
@@ -117,10 +106,6 @@ public class BittiInputStream extends InputStream {
 		puskurinKoko -= bitteja;
 		bittiPuskuri = bittiPuskuri & BittiOutputStream.BITTIMASKIT[puskurinKoko];
 
-		if (DEBUG) {
-			System.out.println("  palautettava: " + annaBittiStringi(palautettava, bitteja) + "(" + palautettava + ")");
-			System.out.println("  bittiPuskuri: " + annaBittiStringi(bittiPuskuri, puskurinKoko));
-		}
 		return palautettava;
  	}
 		

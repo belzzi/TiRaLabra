@@ -27,11 +27,6 @@ public class LZWPurku implements PurkuRajapinta {
 	 * 
 	 */
 	private File kohde;
-	
-	/** Virheidenetsint‰tila p‰‰lle (true) / pois (false)
-	 * 
-	 */
-	private static final boolean DEBUG = false;
 		
 	/** Sanasto t‰lle purkuoperaatiolle.
 	 *  Avaimena k‰ytet‰‰n merkkijonoa ja arvona kokonaislukua.
@@ -99,10 +94,6 @@ public class LZWPurku implements PurkuRajapinta {
 	 	            sanasto[i] = "" + (char) i;
 	    	    seuraavaKoodi = 256;
 	    	 }
-	     }
-	     if (DEBUG) {
-	    	 System.out.println("Yhteens‰ " + bittiLaskuri/8+ " tavua pakattua dataa luettu");
-	    	 System.out.println("Yhteens‰ " + tavuLaskuri + " tavua purettua dataa kirjoitettu");	     
 	     }
 	     bis.close();
 	     bos.flush();
