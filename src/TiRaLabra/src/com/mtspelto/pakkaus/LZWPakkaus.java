@@ -86,7 +86,7 @@ public class LZWPakkaus implements PakkausRajapinta {
 				int koodi = seuraavaKoodi++;
 				pakkausSanasto.lisaaElementti(merkkijono.toString(), koodi);
 				merkkijono.deleteCharAt(merkkijono.length()-1);
-				int kirjoitettavaInt = (int)pakkausSanasto.annaArvo("" + merkkijono);
+				int kirjoitettavaInt = ((Integer)pakkausSanasto.annaArvo("" + merkkijono)).intValue();
 				bos.write(12, kirjoitettavaInt);
 				bittiLaskuri += 12;
 				merkkijono = new StringBuilder();
@@ -97,7 +97,7 @@ public class LZWPakkaus implements PakkausRajapinta {
 				pakkausSanasto = new HajautusTaulukko();
 				for (int i = 0; i < 256; i++) {
 					String merkkiString = new String("" + (char)i);
-					pakkausSanasto.lisaaElementti(merkkiString, i);
+					pakkausSanasto.lisaaElementti(merkkiString, new Integer(i));
 				}
 				seuraavaKoodi = 256;
 			}
